@@ -2,7 +2,11 @@
 #
 # SPDX-License-Identifier: MIT
 
-from plumed_bench_pp.parser import parse_benchmark_output, parse_full_benchmark_output, parse_plumed_time_report
+from plumed_bench_pp.parser import (
+    parse_benchmark_output,
+    parse_full_benchmark_output,
+    parse_plumed_time_report,
+)
 
 
 def test_parse_benchmark_output(readme_example_benchmark_output):
@@ -18,7 +22,19 @@ def test_parse_plumed_time_report(plumed_time_report):
     assert parse_plumed_time_report(lines) == expected
 
 
-def test_parse_full_benchmark_output(full_benchmark_output):
-    example, expected = full_benchmark_output
+def test_parse_full_benchmark_output_noheader(full_benchmark_output_noheader):
+    example, expected = full_benchmark_output_noheader
+    lines = example.split("\n")
+    assert parse_full_benchmark_output(lines) == expected
+
+
+def test_parse_full_benchmark_output1k2f(full_benchmark_output_1k2f):
+    example, expected = full_benchmark_output_1k2f
+    lines = example.split("\n")
+    assert parse_full_benchmark_output(lines) == expected
+
+
+def test_parse_full_benchmark_output2k1f(full_benchmark_output_2k1f):
+    example, expected = full_benchmark_output_2k1f
     lines = example.split("\n")
     assert parse_full_benchmark_output(lines) == expected
