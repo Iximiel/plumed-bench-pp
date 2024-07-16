@@ -4,7 +4,10 @@
 
 import re
 from itertools import dropwhile
-from typing import Iterable
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
 
 # using raw string (r) to avoid warnings with the escaped characters
 __FLOATMATCH = r"[+-]?(?:\d+(?:[.]\d*)?(?:e[+-]?\d+)?|[.]\d+(?:e[+-]?\d+)?)"
@@ -120,9 +123,7 @@ def parse_full_benchmark_output(lines: list[str]) -> dict:
             elif result := __BMUseDomainDecomposition.search(line):
                 header["BENCHDOMAINDECOMPOSITION"] = True
 
-    parsing_lines = dropwhile(
-        lambda line: not line.startswith("BENCH:  Starting MD loop"), lines
-    )
+    parsing_lines = dropwhile(lambda line: not line.startswith("BENCH:  Starting MD loop"), lines)
     results = parse_benchmark_output(parsing_lines)
     if len(header) > 0:
         results["BENCHSETTINGS"] = header
