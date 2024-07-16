@@ -6,6 +6,8 @@ import re
 from itertools import dropwhile
 from typing import TYPE_CHECKING
 
+from plumed_bench_pp.utils import kernel_name
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
@@ -51,7 +53,7 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
     for line in lines:
         if result := __Kernel.search(line):
             if len(kernel) > 0:
-                data[kernel["kernel"]] = kernel
+                data[kernel_name(data, kernel["kernel"])] = kernel
                 kernel = {}
             kernel["kernel"] = result.group(1)
         elif result := __Input.search(line):
@@ -74,7 +76,7 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
             }
     # add the last kernel
     if len(kernel) > 0:
-        data[kernel["kernel"]] = kernel
+        data[kernel_name(data, kernel["kernel"])] = kernel
     return data
 
 
