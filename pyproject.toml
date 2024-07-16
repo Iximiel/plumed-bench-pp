@@ -36,6 +36,7 @@ path = "src/plumed_bench_pp/__about__.py"
 [tool.hatch.envs.types]
 extra-dependencies = [
   "mypy>=1.0.0",
+  "pytest"
 ]
 [tool.hatch.envs.types.scripts]
 check = "mypy --install-types --non-interactive {args:src/plumed_bench_pp tests}"
@@ -62,3 +63,6 @@ exclude_lines = [
 #lint and formatting:
 [tool.ruff.lint.extend-per-file-ignores]
 "tests/conftest.py" = ["W291"]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12"]

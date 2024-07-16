@@ -4,13 +4,14 @@
 
 import re
 from itertools import dropwhile
+from typing import Iterable
 
 # using raw string (r) to avoid warnings with the escaped characters
 __FLOATMATCH = r"[+-]?(?:\d+(?:[.]\d*)?(?:e[+-]?\d+)?|[.]\d+(?:e[+-]?\d+)?)"
 __Kernel = re.compile(r"Kernel:\s*(\S*)")
 __Input = re.compile(r"Input:\s*(\S*)")
 __Comparative = re.compile(rf"Comparative:\s*({__FLOATMATCH}) \+\- ({__FLOATMATCH})")
-__NumerOfAtoms = re.compile(r" Number of atoms: (\d+)")
+# __NumerOfAtoms = re.compile(r" Number of atoms: (\d+)")
 __Data = re.compile(
     rf"(?:PLUMED: |BENCH:  )(?P<name>.+)\s+(?P<Cycles>[0-9]+)+\s+"
     rf"(?P<Total>{__FLOATMATCH})+\s+"
@@ -32,7 +33,7 @@ __BMUseDomainDecomposition = re.compile(r"BENCH:  Using --domain-decomposition")
 # BENCH:  Initializing the setup of the kernel(s)
 
 
-def parse_benchmark_output(lines: list[str]) -> dict:
+def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
     """
     Parses the benchmark output lines to extract kernel information and performance statistics.
 
@@ -42,8 +43,8 @@ def parse_benchmark_output(lines: list[str]) -> dict:
     Returns:
         dict: A dictionary containing the parsed benchmark data.
     """
-    data = {}
-    kernel = {}
+    data: dict = {}
+    kernel: dict = {}
     for line in lines:
         if result := __Kernel.search(line):
             if len(kernel) > 0:
