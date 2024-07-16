@@ -559,7 +559,7 @@ PLUMED: 6 Update                                        2000     0.011222     0.
             "BENCHSETTINGS": {
                 "BENCHKERNELS": ["this"],
                 "BENCHINPUTS": ["Coord.dat", "CoordNL.dat"],
-                "BENCHSTEPS": 2500,
+                "BENCHEXPECTEDSTEPS": 2500,
                 "BENCHATOMS": 500,
                 "BENCHMAXTIME": -1.0,
                 "BENCHSLEEP": 0.0,
@@ -844,7 +844,7 @@ PLUMED: 6 Update                                        2000     0.016623     0.
             "BENCHSETTINGS": {
                 "BENCHKERNELS": ["this", "../../src/lib/install/libplumedKernel.so"],
                 "BENCHINPUTS": ["Coord.dat"],
-                "BENCHSTEPS": 2000,
+                "BENCHEXPECTEDSTEPS": 2000,
                 "BENCHATOMS": 500,
                 "BENCHMAXTIME": -1.0,
                 "BENCHSLEEP": 0.0,

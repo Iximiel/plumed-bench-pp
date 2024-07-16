@@ -105,7 +105,7 @@ def parse_full_benchmark_output(lines: list[str]) -> dict:
             elif result := __BMPlumedList.search(line):
                 header["BENCHINPUTS"] = result.group(1).split(":")
             elif result := __BMSteps.search(line):
-                header["BENCHSTEPS"] = int(result.group(1))
+                header["BENCHEXPECTEDSTEPS"] = int(result.group(1))
             elif result := __BMNatoms.search(line):
                 header["BENCHATOMS"] = int(result.group(1))
             elif result := __BMMaxtime.search(line):
@@ -119,7 +119,9 @@ def parse_full_benchmark_output(lines: list[str]) -> dict:
             elif result := __BMUseDomainDecomposition.search(line):
                 header["BENCHDOMAINDECOMPOSITION"] = True
 
-    parsing_lines = dropwhile(lambda line: not line.startswith("BENCH:  Starting MD loop"), lines)
+    parsing_lines = dropwhile(
+        lambda line: not line.startswith("BENCH:  Starting MD loop"), lines
+    )
     results = parse_benchmark_output(parsing_lines)
     if len(header) > 0:
         results["BENCHSETTINGS"] = header
