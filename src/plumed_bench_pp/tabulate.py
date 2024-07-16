@@ -27,10 +27,9 @@ def extract_row(
     for key in data:
         if key == "BENCHSETTINGS":
             continue
-        loc = f'{key}+{data[key]["input"]}'
         tmp = {}
         for row in rows:
             tmp[row] = [data[key][row][timing_col] for timing_col in TIMINGCOLS]
-        df[loc] = tmp
+        df[key] = tmp
 
     return df

@@ -10,7 +10,7 @@ import plumed_bench_pp.tabulate as pbpptbl
 
 def the_test_extract_row(input_data):
     mydict, expectedcols = input_data
-    retval = pbpptbl.extract_row(mydict, cols=[pbppconst.CALCULATE, pbppconst.TOTALTIME])
+    retval = pbpptbl.extract_row(mydict, rows=[pbppconst.CALCULATE, pbppconst.TOTALTIME])
     for key in expectedcols:
         assert pbppconst.CALCULATE in retval[key]
         assert expectedcols[key][pbppconst.CALCULATE] == retval[key][pbppconst.CALCULATE]

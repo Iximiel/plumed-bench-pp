@@ -120,7 +120,7 @@ PLUMED: 5B Update forces                                5000     0.000119     0.
 PLUMED: 6 Update                                        5000     0.041863     0.000008     0.000005     0.000098
 """,
     "parsed": {
-        "this": {
+        "this+plumed.dat": {
             "kernel": "this",
             "input": "plumed.dat",
             "A Initialization": {
@@ -614,7 +614,7 @@ PLUMED: 6 Update                                        2000     0.011222     0.
             "BENCHATOMDISTRIBUTION": "line",
             "BENCHDOMAINDECOMPOSITION": True,
         },
-        "this": {
+        "this+Coord.dat": {
             "kernel": "this",
             "input": "Coord.dat",
             "compare": {"fraction": 1.0, "error": 0.0},
@@ -703,7 +703,7 @@ PLUMED: 6 Update                                        2000     0.011222     0.
                 "Maximum": 6.8e-05,
             },
         },
-        "this(1)": {
+        "this+CoordNL.dat": {
             "kernel": "this",
             "input": "CoordNL.dat",
             "compare": {"fraction": 0.125, "error": 0.007},
@@ -820,7 +820,7 @@ PLUMED: 6 Update                                        2000     0.011222     0.
             ],
             "6 Update": [2000, 0.017886, 0.000009, 0.000005, 0.000068],
         },
-        "this(1)+CoordNL.dat": {
+        "this+CoordNL.dat": {
             "A Initialization": [1, 0.001542, 0.001542, 0.001542, 0.001542],
             "B0 First step": [1, 0.001072, 0.001072, 0.001072, 0.001072],
             "B1 Warm-up": [399, 0.053350, 0.000134, 0.000021, 0.001604],
@@ -1039,7 +1039,7 @@ PLUMED: 6 Update                                        2000     0.016623     0.
             "BENCHATOMDISTRIBUTION": "line",
             "BENCHSHUFFLED": True,
         },
-        "this": {
+        "this+Coord.dat": {
             "kernel": "this",
             "input": "Coord.dat",
             "compare": {"fraction": 1.0, "error": 0.0},
@@ -1128,7 +1128,7 @@ PLUMED: 6 Update                                        2000     0.016623     0.
                 "Maximum": 0.000161,
             },
         },
-        "../../src/lib/install/libplumedKernel.so": {
+        "../../src/lib/install/libplumedKernel.so+Coord.dat": {
             "kernel": "../../src/lib/install/libplumedKernel.so",
             "input": "Coord.dat",
             "compare": {"fraction": 1.021, "error": 0.003},
@@ -1340,7 +1340,7 @@ PLUMED: 5 Applying (backward loop)                      1000     0.008900     0.
 PLUMED: 6 Update                                        1000     0.043015     0.000043     0.000032     0.000239
     """,
         {
-            "this": {
+            "this+plumed.dat": {
                 "kernel": "this",
                 "input": "plumed.dat",
                 "compare": {"fraction": 1.0, "error": 0.0},
@@ -1429,7 +1429,7 @@ PLUMED: 6 Update                                        1000     0.043015     0.
                     "Maximum": 8e-05,
                 },
             },
-            "../../src/lib/install/libplumedKernel.so": {
+            "../../src/lib/install/libplumedKernel.so+plumed.dat": {
                 "kernel": "../../src/lib/install/libplumedKernel.so",
                 "input": "plumed.dat",
                 "compare": {"fraction": 0.941, "error": 0.002},

@@ -53,7 +53,9 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
     for line in lines:
         if result := __Kernel.search(line):
             if len(kernel) > 0:
-                data[kernel_name(data, kernel["kernel"])] = kernel
+                data[kernel_name(data, f'{kernel["kernel"]}+{kernel["input"]}')] = (
+                    kernel
+                )
                 kernel = {}
             kernel["kernel"] = result.group(1)
         elif result := __Input.search(line):
@@ -76,7 +78,7 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
             }
     # add the last kernel
     if len(kernel) > 0:
-        data[kernel_name(data, kernel["kernel"])] = kernel
+        data[kernel_name(data, f'{kernel["kernel"]}+{kernel["input"]}')] = kernel
     return data
 
 
@@ -125,7 +127,9 @@ def parse_full_benchmark_output(lines: list[str]) -> dict:
             elif result := __BMUseDomainDecomposition.search(line):
                 header["BENCHDOMAINDECOMPOSITION"] = True
 
-    parsing_lines = dropwhile(lambda line: not line.startswith("BENCH:  Starting MD loop"), lines)
+    parsing_lines = dropwhile(
+        lambda line: not line.startswith("BENCH:  Starting MD loop"), lines
+    )
     results = parse_benchmark_output(parsing_lines)
     if len(header) > 0:
         results["BENCHSETTINGS"] = header
