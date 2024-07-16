@@ -422,6 +422,7 @@ PLUMED: 6 Update                                        5000     0.041863     0.
         }
     },
 }
+
 output_1k2f = {
     "file": r"""BENCH:  Welcome to PLUMED benchmark
 BENCH:  Using --kernel=this
@@ -1278,6 +1279,11 @@ PLUMED: 6 Update                                        2000     0.016623     0.
 @pytest.fixture
 def full_benchmark_output_noheader():
     return output_noheader["file"], output_noheader["parsed"]
+
+
+@pytest.fixture
+def extracted_rows_output_noheader():
+    return output_noheader["parsed"], output_noheader["colums"]
 
 
 @pytest.fixture

@@ -25,3 +25,7 @@ def test_extract_row_2k1f(extracted_rows_output_2k1f):
 
 def test_extract_row_1k2f(extracted_rows_output_1k2f):
     the_test_extract_row(extracted_rows_output_1k2f)
+
+
+def test_extract_row_noheader(extracted_rows_output_noheader):
+    the_test_extract_row(extracted_rows_output_noheader)
