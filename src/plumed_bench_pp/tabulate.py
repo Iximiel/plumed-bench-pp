@@ -8,10 +8,7 @@ from plumed_bench_pp.constants import (
 )
 
 
-def extract_row(
-    data: dict,
-    rows: list,
-) -> "dict[str, dict[str,list]]":
+def extract_rows(data: dict, rows: list) -> "dict[str, dict[str,list]]":
     """
     Extracts the specified rows from the given data dictionary.
     Works with the results of plumed_bench_pp.parser.parse_benchmark_output
