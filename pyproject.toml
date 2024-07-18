@@ -23,7 +23,7 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["pandas"]
+dependencies = ["matplotlib","pandas"]
 
 [project.urls]
 Documentation = "https://github.com//plumed-bench-pp#readme"
