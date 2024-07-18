@@ -77,8 +77,7 @@ def convert_to_table(
     def common_iterable(obj):
         """Iterates over the values of a dict or any iterable"""
         if isinstance(obj, dict):
-            for key in obj:
-                yield obj[key]
+            yield from obj.values()
         else:
             yield from obj
 
