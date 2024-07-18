@@ -1788,11 +1788,12 @@ def incremental_output():
     toret = {}
     import string
 
-    for i, name in enumerate(list(string.ascii_lowercase)[:6]):
+    nfiles = 6
+    for i, name in enumerate(list(string.ascii_lowercase)[:nfiles], 1):
         toret[name + ".out"] = {
             "BENCHSETTINGS": {
                 "BENCHKERNELS": ["this"],
-                "BENCHINPUTS": ["Coord.dat"],
+                "BENCHINPUTS": [f"Coord{i}.dat"],
                 "BENCHEXPECTEDSTEPS": 2000,
                 "BENCHATOMS": i * 500,
                 "BENCHMAXTIME": -1.0,
@@ -1801,7 +1802,7 @@ def incremental_output():
             },
             f"this+Coord{i}.dat": {
                 "kernel": "this",
-                "input": "Coord.dat",
+                "input": f"Coord{i}.dat",
                 "compare": {"fraction": 1.0, "error": 0.0},
                 "Plumed": {
                     "Cycles": 1,
@@ -1820,7 +1821,7 @@ def incremental_output():
             },
             f"that+Coord{i}.dat": {
                 "kernel": "that",
-                "input": "Coord.dat",
+                "input": f"Coord{i}.dat",
                 "compare": {"fraction": 2.0, "error": 0.0},
                 "Plumed": {
                     "Cycles": 1,
@@ -1838,4 +1839,5 @@ def incremental_output():
                 },
             },
         }
-    return toret
+    # parsed input, kernels, filelist
+    return toret, ["this", "that"], [f"Coord{i}.dat" for i in range(1, 1 + nfiles)]

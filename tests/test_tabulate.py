@@ -29,38 +29,34 @@ def test_extract_row_noheader(extracted_rows_output_noheader):
     the_test_extract_row(extracted_rows_output_noheader)
 
 
-def convert_to_table(filesdict, rows_to_extract, keylist):
-    from pandas import DataFrame
-
-    data = {}
-    for row in rows_to_extract:
-        data[row] = []
-    for file, key in zip(filesdict, keylist):
-        natoms = filesdict[file]["BENCHSETTINGS"]["BENCHATOMS"]
-        tt = pbpptbl.extract_rows(filesdict[file], rows_to_extract)
-        extracted_keys = tt.keys()
-        if key in extracted_keys:
-            for row in rows_to_extract:
-                data[row].append([natoms, *tt[key][row]])
-        # else:
-        #     #warning?
-
-    for row in rows_to_extract:
-        data[row] = DataFrame(data[row], columns=["natoms", *pbppconst.TIMINGCOLS])
-    return data
-
-
-def test_get_table(incremental_output):
-    for k in incremental_output:
-        t = incremental_output[k]
+def test_convert_to_table(incremental_output):
+    parsed_input, _, filelist = incremental_output
+    for k in parsed_input:
+        t = parsed_input[k]
         nat = t["BENCHSETTINGS"]["BENCHATOMS"]
         i = nat // 500
         dt = pbpptbl.extract_rows(t, rows=[pbppconst.TOTALTIME])
         assert dt[f"this+Coord{i}.dat"]["Plumed"][0] == 1
         assert dt[f"this+Coord{i}.dat"]["Plumed"][1] == 2 * i
-    keylist = [f"this+Coord{i}.dat" for i in range(len(incremental_output))]
-    mydict = convert_to_table(incremental_output, [pbppconst.CALCULATE, pbppconst.TOTALTIME], keylist)
+
+    mydict = pbpptbl.convert_to_table(
+        parsed_input, [pbppconst.CALCULATE, pbppconst.TOTALTIME], kernel="this", inputlist=filelist
+    )
     assert pbppconst.CALCULATE in mydict
+    assert all(mydict[pbppconst.CALCULATE].Cycles == ([100] * (len(parsed_input))))
+    assert all(mydict[pbppconst.CALCULATE].Total == [1.5 * i for i in range(1, 1 + len(parsed_input))])
 
     assert pbppconst.TOTALTIME in mydict
-    assert mydict[pbppconst.TOTALTIME].Cycles == [1] * len(incremental_output)
+    assert all(mydict[pbppconst.TOTALTIME].Cycles == ([1] * (len(parsed_input))))
+    assert all(mydict[pbppconst.TOTALTIME].Total == [2.0 * i for i in range(1, 1 + len(parsed_input))])
+
+    mydict = pbpptbl.convert_to_table(
+        parsed_input, [pbppconst.CALCULATE, pbppconst.TOTALTIME], kernel="that", inputlist=filelist
+    )
+    assert pbppconst.CALCULATE in mydict
+    assert all(mydict[pbppconst.CALCULATE].Cycles == ([100] * (len(parsed_input))))
+    assert all(mydict[pbppconst.CALCULATE].Total == [3.5 * i for i in range(1, 1 + len(parsed_input))])
+
+    assert pbppconst.TOTALTIME in mydict
+    assert all(mydict[pbppconst.TOTALTIME].Cycles == ([1] * (len(parsed_input))))
+    assert all(mydict[pbppconst.TOTALTIME].Total == [4.0 * i for i in range(1, 1 + len(parsed_input))])
