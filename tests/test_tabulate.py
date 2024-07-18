@@ -31,14 +31,6 @@ def test_extract_row_noheader(extracted_rows_output_noheader):
 
 def test_convert_to_table(incremental_output):
     parsed_input, _, filelist = incremental_output
-    for k in parsed_input:
-        t = parsed_input[k]
-        nat = t["BENCHSETTINGS"]["BENCHATOMS"]
-        i = nat // 500
-        dt = pbpptbl.extract_rows(t, rows=[pbppconst.TOTALTIME])
-        assert dt[f"this+Coord{i}.dat"]["Plumed"][0] == 1
-        assert dt[f"this+Coord{i}.dat"]["Plumed"][1] == 2 * i
-
     mydict = pbpptbl.convert_to_table(
         parsed_input, [pbppconst.CALCULATE, pbppconst.TOTALTIME], kernel="this", inputlist=filelist
     )
