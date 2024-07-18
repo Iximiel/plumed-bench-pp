@@ -34,16 +34,16 @@ def test_check_file(incremental_output):
     _, _, filelist = incremental_output
     # so that fname is in list
     fname = filelist[0]
-    assert pbpptbl.checkfile(fname, filelist)
+    assert pbpptbl._checkfile(fname, filelist)  # noqa:SLF001
 
     # check for a pattern
     fname = filelist[0]
-    assert pbpptbl.checkfile(fname, fname[:5])
+    assert pbpptbl._checkfile(fname, fname[:5])  # noqa:SLF001
     from re import compile
 
     # use a regex
     pattern = compile(r"Coord\d+\.dat")
-    assert pbpptbl.checkfile(fname, pattern)
+    assert pbpptbl._checkfile(fname, pattern)  # noqa:SLF001
 
 
 def test_convert_to_table(incremental_output):
@@ -60,7 +60,7 @@ def test_convert_to_table(incremental_output):
     assert all(mydict[pbppconst.TOTALTIME].Total == [2.0 * i for i in range(1, 1 + len(parsed_input))])
 
     mydict = pbpptbl.convert_to_table(
-        parsed_input, [pbppconst.CALCULATE, pbppconst.TOTALTIME], kernel="that", inputlist=filelist
+        parsed_input, [pbppconst.CALCULATE, pbppconst.TOTALTIME], kernel="that", inputlist="Coord"
     )
     assert pbppconst.CALCULATE in mydict
     assert all(mydict[pbppconst.CALCULATE].Cycles == ([100] * (len(parsed_input))))

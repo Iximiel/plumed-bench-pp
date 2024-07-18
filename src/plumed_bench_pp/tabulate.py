@@ -36,7 +36,7 @@ def extract_rows(data: dict, rows: list) -> "dict[str, dict[str,list]]":
     return df
 
 
-def checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> list:
+def _checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> bool:
     if isinstance(pattern, list):
         return fname in pattern
     if isinstance(pattern, re.Pattern):
@@ -44,17 +44,20 @@ def checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> list:
     return pattern in fname
 
 
-def convert_to_table(filesdict, rows_to_extract, kernel, inputlist):
-    data = {}
+def convert_to_table(
+    filesdict: dict, rows_to_extract: list[str], kernel: str, inputlist: "str|list[str]|re.Pattern"
+) -> "dict[str,DataFrame]":
+    data: dict[str, DataFrame] = {}
+    tmp: dict = {}
     for row in rows_to_extract:
-        data[row] = []
+        tmp[row] = []
     for fname in filesdict:
         file = filesdict[fname]
         key = None
         for k in file:
             if k == "BENCHSETTINGS":
                 continue
-            if (file[k]["kernel"] == kernel) and (file[k]["input"] in inputlist):
+            if (file[k]["kernel"] == kernel) and _checkfile(file[k]["input"], inputlist):
                 key = k
                 break
 
@@ -65,8 +68,8 @@ def convert_to_table(filesdict, rows_to_extract, kernel, inputlist):
 
         tt = extract_rows(file, rows_to_extract)
         for row in rows_to_extract:
-            data[row].append([natoms, *tt[key][row]])
+            tmp[row].append([natoms, *tt[key][row]])
 
     for row in rows_to_extract:
-        data[row] = DataFrame(data[row], columns=["natoms", *TIMINGCOLS])
+        data[row] = DataFrame(tmp[row], columns=["natoms", *TIMINGCOLS])
     return data
