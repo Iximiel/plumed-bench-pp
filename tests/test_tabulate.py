@@ -61,7 +61,7 @@ def test_convert_to_table(incremental_output):
 
     # testing inputlist pattern and passing a list
     mydict = pbpptbl.convert_to_table(
-        [parsed_input[k] for k in parsed_input],
+        [parsed_input[k] for k in parsed_input][-1::-1],
         [pbppconst.CALCULATE, pbppconst.TOTALTIME],
         kernel="that",
         inputlist="Coord",
