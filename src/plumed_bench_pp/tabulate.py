@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 
+import re
+
 from pandas import DataFrame
 
 from plumed_bench_pp.constants import (
@@ -32,6 +34,14 @@ def extract_rows(data: dict, rows: list) -> "dict[str, dict[str,list]]":
         df[key] = tmp
 
     return df
+
+
+def checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> list:
+    if isinstance(pattern, list):
+        return fname in pattern
+    if isinstance(pattern, re.Pattern):
+        return pattern.search(fname) is not None
+    return pattern in fname
 
 
 def convert_to_table(filesdict, rows_to_extract, kernel, inputlist):

@@ -29,6 +29,23 @@ def test_extract_row_noheader(extracted_rows_output_noheader):
     the_test_extract_row(extracted_rows_output_noheader)
 
 
+def test_check_file(incremental_output):
+    # check file from list
+    _, _, filelist = incremental_output
+    # so that fname is in list
+    fname = filelist[0]
+    assert pbpptbl.checkfile(fname, filelist)
+
+    # check for a pattern
+    fname = filelist[0]
+    assert pbpptbl.checkfile(fname, fname[:5])
+    from re import compile
+
+    # use a regex
+    pattern = compile(r"Coord\d+\.dat")
+    assert pbpptbl.checkfile(fname, pattern)
+
+
 def test_convert_to_table(incremental_output):
     parsed_input, _, filelist = incremental_output
     mydict = pbpptbl.convert_to_table(
