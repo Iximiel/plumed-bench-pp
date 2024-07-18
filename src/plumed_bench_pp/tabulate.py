@@ -3,15 +3,16 @@
 # SPDX-License-Identifier: MIT
 
 
+import re
+
+from pandas import DataFrame
+
 from plumed_bench_pp.constants import (
     TIMINGCOLS,
 )
 
 
-def extract_row(
-    data: dict,
-    rows: list,
-) -> "dict[str, dict[str,list]]":
+def extract_rows(data: dict, rows: list) -> "dict[str, dict[str,list]]":
     """
     Extracts the specified rows from the given data dictionary.
     Works with the results of plumed_bench_pp.parser.parse_benchmark_output
@@ -33,3 +34,75 @@ def extract_row(
         df[key] = tmp
 
     return df
+
+
+def _checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> bool:
+    """
+    A function to check if the file name matches the provided pattern.
+
+    The pattern can be a string, a list of strings or a regular expression.
+
+    Args:
+        fname (str): The file name to check.
+        pattern (str|list[str]|re.Pattern): The pattern to match against the file name.
+
+    Returns:
+        bool: True if the file name matches the pattern, False otherwise.
+    """
+
+    if isinstance(pattern, list):
+        return fname in pattern
+    if isinstance(pattern, re.Pattern):
+        return pattern.search(fname) is not None
+    return pattern in fname
+
+
+def convert_to_table(
+    filesdict: "dict|list", rows_to_extract: list[str], kernel: str, inputlist: "str|list[str]|re.Pattern"
+) -> "dict[str,DataFrame]":
+    """
+    Generate a table using the specified rows.
+    Extracts the specified rows from the given files list or dict filtering the specified kernel and input files.
+
+    Parameters:
+        - filesdict: A dictionary containing file data parsed by plumed_bench_pp.parser.parse_benchmark_output
+        - rows_to_extract: A list of strings representing the rows to extract from the files
+        - kernel: A string specifying the kernel to filter files by
+        - inputlist: A string, list of strings, or regular expression pattern to filter the plumed input files used by desired kernel
+
+    Returns:
+        A dictionary where keys are row names and values are DataFrames containing the extracted data.
+    """
+
+    def common_iterable(obj):
+        """Iterates over the values of a dict or any iterable"""
+        if isinstance(obj, dict):
+            yield from obj.values()
+        else:
+            yield from obj
+
+    data: dict[str, DataFrame] = {}
+    tmp: dict = {}
+    for row in rows_to_extract:
+        tmp[row] = []
+    for file in common_iterable(filesdict):
+        key = None
+        for k in file:
+            if k == "BENCHSETTINGS":
+                continue
+            if (file[k]["kernel"] == kernel) and _checkfile(file[k]["input"], inputlist):
+                key = k
+                break
+
+        if key is None:
+            # print warning?
+            continue
+        natoms = file["BENCHSETTINGS"]["BENCHATOMS"]
+
+        tt = extract_rows(file, rows_to_extract)
+        for row in rows_to_extract:
+            tmp[row].append([natoms, *tt[key][row]])
+
+    for row in rows_to_extract:
+        data[row] = DataFrame(tmp[row], columns=["natoms", *TIMINGCOLS])
+    return data

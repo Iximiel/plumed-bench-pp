@@ -1776,3 +1776,68 @@ PLUMED: 6 Update                                        5000     0.041863     0.
             },
         },
     )
+
+
+@pytest.fixture
+def incremental_output():
+    """
+    incremental_output acts as list of preparsed files
+    it only has the BENCHSETTINGS and the total Plumed time  and the calcupate time for two kernels with the same file
+    """
+    # this only mock a "Plumed" output, used for testing the creation of a series of benchmarks with different number of atoms
+    toret = {}
+    import string
+
+    nfiles = 6
+    for i, name in enumerate(list(string.ascii_lowercase)[:nfiles], 1):
+        toret[name + ".out"] = {
+            "BENCHSETTINGS": {
+                "BENCHKERNELS": ["this"],
+                "BENCHINPUTS": [f"Coord{i}.dat"],
+                "BENCHEXPECTEDSTEPS": 2000,
+                "BENCHATOMS": i * 500,
+                "BENCHMAXTIME": -1.0,
+                "BENCHSLEEP": 0.0,
+                "BENCHATOMDISTRIBUTION": "line",
+            },
+            f"this+Coord{i}.dat": {
+                "kernel": "this",
+                "input": f"Coord{i}.dat",
+                "compare": {"fraction": 1.0, "error": 0.0},
+                "Plumed": {
+                    "Cycles": 1,
+                    "Total": i * 2.0,
+                    "Average": i * 2.0,
+                    "Minimum": i * 2.0,
+                    "Maximum": i * 2.0,
+                },
+                "4 Calculating (forward loop)": {
+                    "Cycles": 100,
+                    "Total": i * 1.5,
+                    "Average": i * 1.5 / 100,
+                    "Minimum": i * 1.5 / 100,
+                    "Maximum": i * 1.5 / 100,
+                },
+            },
+            f"that+Coord{i}.dat": {
+                "kernel": "that",
+                "input": f"Coord{i}.dat",
+                "compare": {"fraction": 2.0, "error": 0.0},
+                "Plumed": {
+                    "Cycles": 1,
+                    "Total": i * 4.0,
+                    "Average": i * 4.0,
+                    "Minimum": i * 4.0,
+                    "Maximum": i * 4.0,
+                },
+                "4 Calculating (forward loop)": {
+                    "Cycles": 100,
+                    "Total": i * 3.5,
+                    "Average": i * 3.5 / 100,
+                    "Minimum": i * 3.5 / 100,
+                    "Maximum": i * 3.5 / 100,
+                },
+            },
+        }
+    # parsed input, kernels, filelist
+    return toret, ["this", "that"], [f"Coord{i}.dat" for i in range(1, 1 + nfiles)]
