@@ -9,8 +9,10 @@ import numpy as np
 if TYPE_CHECKING:
     from typing import Any
 
+    from matplotlib.container import BarContainer
     from numpy import ndarray
     from pandas import DataFrame
+
 from matplotlib.pyplot import Axes
 
 
@@ -25,7 +27,7 @@ def plot_histo(
     colors: "list|None" = None,
     relative_to: "dict[str, DataFrame]| Any" = None,
     relative_to_row: "str|None" = None,
-):
+) -> "list[BarContainer]":
     """
     Plot a histogram based on the provided data for a specified row.
 
@@ -91,13 +93,13 @@ def plot_histo_relative(
     row: str,
     relative_to: "dict[str, DataFrame]| Any",
     relative_to_row: "str|None" = None,
-    *,
     barwidth: float = 0.8,
+    *,
     normalize_to_cycles: "bool|str" = False,
     x: "ndarray|None" = None,
     colors: "list|None" = None,
-):
-    """a shortcut to generate a relative histogram"""
+) -> "list[BarContainer]":
+    """a shortcut to generate a relative histogram, with relative_to options set as positional arguments"""
     plot_histo(
         ax,
         data,
