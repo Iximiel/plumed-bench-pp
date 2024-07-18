@@ -59,8 +59,12 @@ def test_convert_to_table(incremental_output):
     assert all(mydict[pbppconst.TOTALTIME].Cycles == ([1] * (len(parsed_input))))
     assert all(mydict[pbppconst.TOTALTIME].Total == [2.0 * i for i in range(1, 1 + len(parsed_input))])
 
+    # testing inputlist pattern and passing a list
     mydict = pbpptbl.convert_to_table(
-        parsed_input, [pbppconst.CALCULATE, pbppconst.TOTALTIME], kernel="that", inputlist="Coord"
+        [parsed_input[k] for k in parsed_input],
+        [pbppconst.CALCULATE, pbppconst.TOTALTIME],
+        kernel="that",
+        inputlist="Coord",
     )
     assert pbppconst.CALCULATE in mydict
     assert all(mydict[pbppconst.CALCULATE].Cycles == ([100] * (len(parsed_input))))

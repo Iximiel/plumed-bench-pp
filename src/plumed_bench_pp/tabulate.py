@@ -37,6 +37,19 @@ def extract_rows(data: dict, rows: list) -> "dict[str, dict[str,list]]":
 
 
 def _checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> bool:
+    """
+    A function to check if the file name matches the provided pattern.
+
+    The pattern can be a string, a list of strings or a regular expression.
+
+    Args:
+        fname (str): The file name to check.
+        pattern (str|list[str]|re.Pattern): The pattern to match against the file name.
+
+    Returns:
+        bool: True if the file name matches the pattern, False otherwise.
+    """
+
     if isinstance(pattern, list):
         return fname in pattern
     if isinstance(pattern, re.Pattern):
@@ -45,14 +58,35 @@ def _checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> bool:
 
 
 def convert_to_table(
-    filesdict: dict, rows_to_extract: list[str], kernel: str, inputlist: "str|list[str]|re.Pattern"
+    filesdict: "dict|list", rows_to_extract: list[str], kernel: str, inputlist: "str|list[str]|re.Pattern"
 ) -> "dict[str,DataFrame]":
+    """
+    Generate a table using the specified rows.
+    Extracts the specified rows from the given files list or dict filtering the specified kernel and input files.
+
+    Parameters:
+        - filesdict: A dictionary containing file data parsed by plumed_bench_pp.parser.parse_benchmark_output
+        - rows_to_extract: A list of strings representing the rows to extract from the files
+        - kernel: A string specifying the kernel to filter files by
+        - inputlist: A string, list of strings, or regular expression pattern to filter the plumed input files used by desired kernel
+
+    Returns:
+        A dictionary where keys are row names and values are DataFrames containing the extracted data.
+    """
+
+    def common_iterable(obj):
+        """Iterates over the values of a dict or any iterable"""
+        if isinstance(obj, dict):
+            for key in obj:
+                yield obj[key]
+        else:
+            yield from obj
+
     data: dict[str, DataFrame] = {}
     tmp: dict = {}
     for row in rows_to_extract:
         tmp[row] = []
-    for fname in filesdict:
-        file = filesdict[fname]
+    for file in common_iterable(filesdict):
         key = None
         for k in file:
             if k == "BENCHSETTINGS":
@@ -62,7 +96,7 @@ def convert_to_table(
                 break
 
         if key is None:
-            # print warning
+            # print warning?
             continue
         natoms = file["BENCHSETTINGS"]["BENCHATOMS"]
 
