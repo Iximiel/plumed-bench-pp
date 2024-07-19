@@ -37,10 +37,16 @@ def get_kernels(data: dict) -> set[str]:
     if isinstance(data, BenchmarkRun):
         data = [data]
     for d in _common_iterable(data):
-        toret + [d.runs[k].kernel for k in d.runs]
+        toret += [d.runs[k].kernel for k in d.runs]
 
     return set(toret)
 
 
-# def get_files(data: dict) -> set[str]:
-#     pass
+def get_inputfiles(data: dict) -> set[str]:
+    toret = []
+    if isinstance(data, BenchmarkRun):
+        data = [data]
+    for d in _common_iterable(data):
+        toret += [d.runs[k].input for k in d.runs]
+
+    return set(toret)
