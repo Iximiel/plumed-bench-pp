@@ -12,28 +12,6 @@ from plumed_bench_pp.constants import (
 )
 
 
-def extract_rows(data: dict, rows: list) -> "dict[str, dict[str,list]]":
-    """
-    Extracts the specified rows from the given data dictionary.
-    Works with the results of plumed_bench_pp.parser.parse_benchmark_output
-
-    Args:
-        data (dict): The input dictionary containing data.
-        rows (list): The list of rows to extract.
-
-    Returns:
-        dict[str, dict[str,list]]: A dictionary of the simulations.
-    """
-    df = {}
-    for key in data.runs:
-        tmp = {}
-        for row in rows:
-            tmp[row] = data.runs[key].rows[row].as_list()
-        df[key] = tmp
-
-    return df
-
-
 def _checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> bool:
     """
     A function to check if the file name matches the provided pattern.
@@ -95,7 +73,7 @@ def convert_to_table(
             continue
         natoms = file.settings.atoms
 
-        tt = extract_rows(file, rows_to_extract)
+        tt = file.extract_rows(rows_to_extract)
         for row in rows_to_extract:
             tmp[row].append([natoms, *tt[key][row]])
 

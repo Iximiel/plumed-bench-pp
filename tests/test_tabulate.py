@@ -7,8 +7,8 @@ import plumed_bench_pp.tabulate as pbpptbl
 
 
 def the_test_extract_row(input_data):
-    mydict, expectedcols = input_data
-    retval = pbpptbl.extract_rows(mydict, rows=[pbppconst.CALCULATE, pbppconst.TOTALTIME])
+    mybrun, expectedcols = input_data
+    retval = mybrun.extract_rows(rows=[pbppconst.CALCULATE, pbppconst.TOTALTIME])
     for key in expectedcols:
         assert pbppconst.CALCULATE in retval[key]
         assert expectedcols[key][pbppconst.CALCULATE] == retval[key][pbppconst.CALCULATE]

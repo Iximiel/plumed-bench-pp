@@ -168,6 +168,26 @@ class BenchmarkRun:
     settings: BenchmarkSettings = field(default_factory=BenchmarkSettings)
     runs: dict[str, KernelBenchmark] = field(default_factory=dict)
 
+    def extract_rows(self, rows: list) -> "dict[str, dict[str,list]]":
+        """
+        Extracts the specified rows from the given data dictionary.
+        Works with the results of plumed_bench_pp.parser.parse_benchmark_output
+
+        Args:
+            rows (list): The list of rows to extract.
+
+        Returns:
+            dict[str, dict[str,list]]: A dictionary of the simulations.
+        """
+        df = {}
+        for key in self.runs:
+            tmp = {}
+            for row in rows:
+                tmp[row] = self.runs[key].rows[row].as_list()
+            df[key] = tmp
+
+        return df
+
 
 def parse_full_benchmark_output(lines: list[str]) -> BenchmarkRun:
     # more or less the output for the times is few lines after the message for the MD starting
