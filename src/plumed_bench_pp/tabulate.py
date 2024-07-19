@@ -8,8 +8,8 @@ import re
 from pandas import DataFrame
 
 from plumed_bench_pp.constants import TIMINGCOLS
-
 from plumed_bench_pp.utils import _common_iterable
+
 
 def _checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> bool:
     """
