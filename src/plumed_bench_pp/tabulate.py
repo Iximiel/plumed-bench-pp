@@ -12,30 +12,6 @@ from plumed_bench_pp.constants import (
 )
 
 
-def extract_rows(data: dict, rows: list) -> "dict[str, dict[str,list]]":
-    """
-    Extracts the specified rows from the given data dictionary.
-    Works with the results of plumed_bench_pp.parser.parse_benchmark_output
-
-    Args:
-        data (dict): The input dictionary containing data.
-        rows (list): The list of rows to extract.
-
-    Returns:
-        dict[str, dict[str,list]]: A dictionary of the simulations.
-    """
-    df = {}
-    for key in data:
-        if key == "BENCHSETTINGS":
-            continue
-        tmp = {}
-        for row in rows:
-            tmp[row] = [data[key][row][timing_col] for timing_col in TIMINGCOLS]
-        df[key] = tmp
-
-    return df
-
-
 def _checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> bool:
     """
     A function to check if the file name matches the provided pattern.
@@ -87,19 +63,17 @@ def convert_to_table(
         tmp[row] = []
     for file in common_iterable(filesdict):
         key = None
-        for k in file:
-            if k == "BENCHSETTINGS":
-                continue
-            if (file[k]["kernel"] == kernel) and _checkfile(file[k]["input"], inputlist):
+        for k in file.runs:
+            if (file.runs[k].kernel == kernel) and _checkfile(file.runs[k].input, inputlist):
                 key = k
                 break
 
         if key is None:
             # print warning?
             continue
-        natoms = file["BENCHSETTINGS"]["BENCHATOMS"]
+        natoms = file.settings.atoms
 
-        tt = extract_rows(file, rows_to_extract)
+        tt = file.extract_rows(rows_to_extract)
         for row in rows_to_extract:
             tmp[row].append([natoms, *tt[key][row]])
 

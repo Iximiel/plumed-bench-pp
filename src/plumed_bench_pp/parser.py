@@ -6,6 +6,7 @@ import re
 from itertools import dropwhile
 from typing import TYPE_CHECKING
 
+from plumed_bench_pp.types import BenchmarkRow, BenchmarkRun, BenchmarkSettings, KernelBenchmark
 from plumed_bench_pp.utils import kernel_name
 
 if TYPE_CHECKING:
@@ -35,7 +36,6 @@ __BMSleep = re.compile(r"BENCH:  Using --sleep=(\d+)")
 __BMAtomDistributions = re.compile(r"BENCH:  Using --atom-distribution=(.+)")
 __BMIsSuffled = re.compile(r"BENCH:  Using --shuffled")
 __BMUseDomainDecomposition = re.compile(r"BENCH:  Using --domain-decomposition")
-# BENCH:  Initializing the setup of the kernel(s)
 
 
 def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
@@ -49,18 +49,18 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
         dict: A dictionary containing the parsed benchmark data.
     """
     data: dict = {}
-    kernel: dict = {}
+    kernel: KernelBenchmark = KernelBenchmark()
     for line in lines:
         if result := __Kernel.search(line):
-            if len(kernel) > 0:
-                data[kernel_name(data, f'{kernel["kernel"]}+{kernel["input"]}')] = kernel
+            if kernel.has_data():
+                data[kernel_name(data, f"{kernel.kernel}+{kernel.input}")] = kernel
 
-                kernel = {}
-            kernel["kernel"] = result.group(1)
+                kernel = KernelBenchmark()
+            kernel.kernel = result.group(1)
         elif result := __Input.search(line):
-            kernel["input"] = result.group(1)
+            kernel.input = result.group(1)
         elif result := __Comparative.search(line):
-            kernel["compare"] = {
+            kernel.compare = {
                 "fraction": float(result.group(1)),
                 "error": float(result.group(2)),
             }
@@ -68,66 +68,52 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
             name = result.group("name").strip()
             if name == "":
                 name = "Plumed"
-            kernel[name] = {
-                "Cycles": int(result.group("Cycles")),
-                "Total": float(result.group("Total")),
-                "Average": float(result.group("Average")),
-                "Minimum": float(result.group("Minimum")),
-                "Maximum": float(result.group("Maximum")),
-            }
+            kernel.rows[name] = BenchmarkRow.from_re_match(result)
     # add the last kernel
-    if len(kernel) > 0:
-        data[kernel_name(data, f'{kernel["kernel"]}+{kernel["input"]}')] = kernel
+    if kernel.has_data():
+        data[kernel_name(data, f"{kernel.kernel}+{kernel.input}")] = kernel
     return data
 
 
-def parse_plumed_time_report(lines: list[str]) -> dict:
-    data = {}
+def parse_plumed_time_report(lines: list[str]) -> KernelBenchmark:
+    data: KernelBenchmark = KernelBenchmark()
     for line in lines:
         if result := __Data.search(line):
             name = result.group("name").strip()
             if name == "":
                 name = "Plumed"
-            data[name] = {
-                "Cycles": int(result.group("Cycles")),
-                "Total": float(result.group("Total")),
-                "Average": float(result.group("Average")),
-                "Minimum": float(result.group("Minimum")),
-                "Maximum": float(result.group("Maximum")),
-            }
+            data.rows[name] = BenchmarkRow.from_re_match(result)
     return data
 
 
-def parse_full_benchmark_output(lines: list[str]) -> dict:
+def parse_full_benchmark_output(lines: list[str]) -> BenchmarkRun:
     # more or less the output for the times is few lines after the message for the MD starting
 
-    header = {}
+    header = BenchmarkSettings()
     if "BENCH:  Welcome to PLUMED benchmark" in lines[0]:
         # there is an header :)
         for line in lines:
             if "BENCH:  Initializing the setup of the kernel(s)" in line:
                 break
             if result := __BMKernelList.search(line):
-                header["BENCHKERNELS"] = result.group(1).split(":")
+                header.kernels = result.group(1).split(":")
             elif result := __BMPlumedList.search(line):
-                header["BENCHINPUTS"] = result.group(1).split(":")
+                header.inputs = result.group(1).split(":")
             elif result := __BMSteps.search(line):
-                header["BENCHEXPECTEDSTEPS"] = int(result.group(1))
+                header.steps = int(result.group(1))
             elif result := __BMNatoms.search(line):
-                header["BENCHATOMS"] = int(result.group(1))
+                header.atoms = int(result.group(1))
             elif result := __BMMaxtime.search(line):
-                header["BENCHMAXTIME"] = float(result.group(1))
+                header.maxtime = float(result.group(1))
             elif result := __BMSleep.search(line):
-                header["BENCHSLEEP"] = float(result.group(1))
+                header.sleep = float(result.group(1))
             elif result := __BMAtomDistributions.search(line):
-                header["BENCHATOMDISTRIBUTION"] = result.group(1)
+                header.atom_distribution = result.group(1)
             elif result := __BMIsSuffled.search(line):
-                header["BENCHSHUFFLED"] = True
+                header.shuffled = True
             elif result := __BMUseDomainDecomposition.search(line):
-                header["BENCHDOMAINDECOMPOSITION"] = True
-
-    parsing_lines = dropwhile(lambda line: not line.startswith("BENCH:  Starting MD loop"), lines)
-    results = parse_benchmark_output(parsing_lines)
-    if len(header) > 0:
-        results["BENCHSETTINGS"] = header
-    return results
+                header.domain_decomposition = True
+    return BenchmarkRun(
+        settings=header,
+        runs=parse_benchmark_output(dropwhile(lambda line: not line.startswith("BENCH:  Starting MD loop"), lines)),
+    )
