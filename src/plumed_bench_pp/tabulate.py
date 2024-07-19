@@ -25,12 +25,10 @@ def extract_rows(data: dict, rows: list) -> "dict[str, dict[str,list]]":
         dict[str, dict[str,list]]: A dictionary of the simulations.
     """
     df = {}
-    for key in data:
-        if key == "BENCHSETTINGS":
-            continue
+    for key in data.runs:
         tmp = {}
         for row in rows:
-            tmp[row] = data[key].rows[row].as_list()
+            tmp[row] = data.runs[key].rows[row].as_list()
         df[key] = tmp
 
     return df
@@ -87,17 +85,15 @@ def convert_to_table(
         tmp[row] = []
     for file in common_iterable(filesdict):
         key = None
-        for k in file:
-            if k == "BENCHSETTINGS":
-                continue
-            if (file[k].kernel == kernel) and _checkfile(file[k].input, inputlist):
+        for k in file.runs:
+            if (file.runs[k].kernel == kernel) and _checkfile(file.runs[k].input, inputlist):
                 key = k
                 break
 
         if key is None:
             # print warning?
             continue
-        natoms = file["BENCHSETTINGS"].atoms
+        natoms = file.settings.atoms
 
         tt = extract_rows(file, rows_to_extract)
         for row in rows_to_extract:

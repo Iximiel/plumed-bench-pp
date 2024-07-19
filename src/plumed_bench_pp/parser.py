@@ -152,36 +152,27 @@ def parse_plumed_time_report(lines: list[str]) -> KernelBenchmark:
 
 @dataclass
 class BenchmarkSettings:
-    kernels: list
-    inputs: list
-    steps: int
-    atoms: int
-    maxtime: float
-    sleep: float
-    atom_distribution: str
+    kernels: list = field(default_factory=list)
+    inputs: list = field(default_factory=list)
+    steps: int = -1
+    atoms: int = -1
+    maxtime: float = -1.0
+    sleep: float = 0.0
+    atom_distribution: str = "line"
     shuffled: bool = False
     domain_decomposition: bool = False
 
 
 @dataclass
 class BenchmarkRun:
-    settings: BenchmarkSettings
+    settings: BenchmarkSettings = field(default_factory=BenchmarkSettings)
+    runs: dict[str, KernelBenchmark] = field(default_factory=dict)
 
 
-def parse_full_benchmark_output(lines: list[str]) -> dict:
+def parse_full_benchmark_output(lines: list[str]) -> BenchmarkRun:
     # more or less the output for the times is few lines after the message for the MD starting
 
-    header = BenchmarkSettings(
-        kernels=[],
-        inputs=[],
-        steps=0,
-        atoms=0,
-        maxtime=0,
-        sleep=0,
-        atom_distribution="",
-        shuffled=False,
-        domain_decomposition=False,
-    )
+    header = BenchmarkSettings()
     if "BENCH:  Welcome to PLUMED benchmark" in lines[0]:
         # there is an header :)
         for line in lines:
@@ -205,9 +196,7 @@ def parse_full_benchmark_output(lines: list[str]) -> dict:
                 header.shuffled = True
             elif result := __BMUseDomainDecomposition.search(line):
                 header.domain_decomposition = True
-
-    parsing_lines = dropwhile(lambda line: not line.startswith("BENCH:  Starting MD loop"), lines)
-    results = parse_benchmark_output(parsing_lines)
-    if len(header.kernels) > 0:
-        results["BENCHSETTINGS"] = header
-    return results
+    return BenchmarkRun(
+        settings=header,
+        runs=parse_benchmark_output(dropwhile(lambda line: not line.startswith("BENCH:  Starting MD loop"), lines)),
+    )
