@@ -30,7 +30,7 @@ def extract_rows(data: dict, rows: list) -> "dict[str, dict[str,list]]":
             continue
         tmp = {}
         for row in rows:
-            tmp[row] = [data[key][row][timing_col] for timing_col in TIMINGCOLS]
+            tmp[row] = data[key][row].as_list()
         df[key] = tmp
 
     return df

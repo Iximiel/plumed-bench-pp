@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 import re
+from dataclasses import dataclass
 from itertools import dropwhile
 from typing import TYPE_CHECKING
 
@@ -38,6 +39,45 @@ __BMUseDomainDecomposition = re.compile(r"BENCH:  Using --domain-decomposition")
 # BENCH:  Initializing the setup of the kernel(s)
 
 
+@dataclass
+class BenchmarkRow:
+    # name: str
+    cycles: int
+    total: float
+    average: float
+    minimum: float
+    maximum: float
+
+    def as_list(self) -> list:
+        return [self.cycles, self.total, self.average, self.minimum, self.maximum]
+
+    @staticmethod
+    def from_re_match(result: re.Match) -> "BenchmarkRow":
+        """
+        docstring
+        """
+        return BenchmarkRow(
+            cycles=int(result.group("Cycles")),
+            total=float(result.group("Total")),
+            average=float(result.group("Average")),
+            minimum=float(result.group("Minimum")),
+            maximum=float(result.group("Maximum")),
+        )
+
+    @staticmethod
+    def from_dict(data: dict) -> "BenchmarkRow":
+        """
+        docstring
+        """
+        return BenchmarkRow(
+            cycles=data["Cycles"],
+            total=data["Total"],
+            average=data["Average"],
+            minimum=data["Minimum"],
+            maximum=data["Maximum"],
+        )
+
+
 def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
     """
     Parses the benchmark output lines to extract kernel information and performance statistics.
@@ -68,13 +108,7 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
             name = result.group("name").strip()
             if name == "":
                 name = "Plumed"
-            kernel[name] = {
-                "Cycles": int(result.group("Cycles")),
-                "Total": float(result.group("Total")),
-                "Average": float(result.group("Average")),
-                "Minimum": float(result.group("Minimum")),
-                "Maximum": float(result.group("Maximum")),
-            }
+            kernel[name] = BenchmarkRow.from_re_match(result)
     # add the last kernel
     if len(kernel) > 0:
         data[kernel_name(data, f'{kernel["kernel"]}+{kernel["input"]}')] = kernel
@@ -88,13 +122,7 @@ def parse_plumed_time_report(lines: list[str]) -> dict:
             name = result.group("name").strip()
             if name == "":
                 name = "Plumed"
-            data[name] = {
-                "Cycles": int(result.group("Cycles")),
-                "Total": float(result.group("Total")),
-                "Average": float(result.group("Average")),
-                "Minimum": float(result.group("Minimum")),
-                "Maximum": float(result.group("Maximum")),
-            }
+            data[name] = BenchmarkRow.from_re_match(result)
     return data
 
 
