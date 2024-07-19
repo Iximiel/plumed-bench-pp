@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from itertools import dropwhile
 from typing import TYPE_CHECKING
 
@@ -93,14 +93,10 @@ class BenchmarkRow:
 
 @dataclass
 class KernelBenchmark:
-    kernel: str
-    input: str
-    compare: dict
-    rows: dict
-
-    @staticmethod
-    def empty() -> "KernelBenchmark":
-        return KernelBenchmark("", "", {}, {})
+    kernel: str = ""
+    input: str = ""
+    compare: dict = field(default_factory=dict)
+    rows: dict = field(default_factory=dict)
 
     def has_data(self) -> bool:
         return len(self.rows) > 0 or len(self.compare) > 0 or self.input != "" or self.kernel != ""
@@ -117,13 +113,13 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
         dict: A dictionary containing the parsed benchmark data.
     """
     data: dict = {}
-    kernel: KernelBenchmark = KernelBenchmark.empty()
+    kernel: KernelBenchmark = KernelBenchmark()
     for line in lines:
         if result := __Kernel.search(line):
             if kernel.has_data():
                 data[kernel_name(data, f"{kernel.kernel}+{kernel.input}")] = kernel
 
-                kernel = KernelBenchmark.empty()
+                kernel = KernelBenchmark()
             kernel.kernel = result.group(1)
         elif result := __Input.search(line):
             kernel.input = result.group(1)
@@ -144,7 +140,7 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
 
 
 def parse_plumed_time_report(lines: list[str]) -> KernelBenchmark:
-    data: KernelBenchmark = KernelBenchmark.empty()
+    data: KernelBenchmark = KernelBenchmark()
     for line in lines:
         if result := __Data.search(line):
             name = result.group("name").strip()
@@ -154,36 +150,64 @@ def parse_plumed_time_report(lines: list[str]) -> KernelBenchmark:
     return data
 
 
+@dataclass
+class BenchmarkSettings:
+    kernels: list
+    inputs: list
+    steps: int
+    atoms: int
+    maxtime: float
+    sleep: float
+    atom_distribution: str
+    shuffled: bool = False
+    domain_decomposition: bool = False
+
+
+@dataclass
+class BenchmarkRun:
+    settings: BenchmarkSettings
+
+
 def parse_full_benchmark_output(lines: list[str]) -> dict:
     # more or less the output for the times is few lines after the message for the MD starting
 
-    header = {}
+    header = BenchmarkSettings(
+        kernels=[],
+        inputs=[],
+        steps=0,
+        atoms=0,
+        maxtime=0,
+        sleep=0,
+        atom_distribution="",
+        shuffled=False,
+        domain_decomposition=False,
+    )
     if "BENCH:  Welcome to PLUMED benchmark" in lines[0]:
         # there is an header :)
         for line in lines:
             if "BENCH:  Initializing the setup of the kernel(s)" in line:
                 break
             if result := __BMKernelList.search(line):
-                header["BENCHKERNELS"] = result.group(1).split(":")
+                header.kernels = result.group(1).split(":")
             elif result := __BMPlumedList.search(line):
-                header["BENCHINPUTS"] = result.group(1).split(":")
+                header.inputs = result.group(1).split(":")
             elif result := __BMSteps.search(line):
-                header["BENCHEXPECTEDSTEPS"] = int(result.group(1))
+                header.steps = int(result.group(1))
             elif result := __BMNatoms.search(line):
-                header["BENCHATOMS"] = int(result.group(1))
+                header.atoms = int(result.group(1))
             elif result := __BMMaxtime.search(line):
-                header["BENCHMAXTIME"] = float(result.group(1))
+                header.maxtime = float(result.group(1))
             elif result := __BMSleep.search(line):
-                header["BENCHSLEEP"] = float(result.group(1))
+                header.sleep = float(result.group(1))
             elif result := __BMAtomDistributions.search(line):
-                header["BENCHATOMDISTRIBUTION"] = result.group(1)
+                header.atom_distribution = result.group(1)
             elif result := __BMIsSuffled.search(line):
-                header["BENCHSHUFFLED"] = True
+                header.shuffled = True
             elif result := __BMUseDomainDecomposition.search(line):
-                header["BENCHDOMAINDECOMPOSITION"] = True
+                header.domain_decomposition = True
 
     parsing_lines = dropwhile(lambda line: not line.startswith("BENCH:  Starting MD loop"), lines)
     results = parse_benchmark_output(parsing_lines)
-    if len(header) > 0:
+    if len(header.kernels) > 0:
         results["BENCHSETTINGS"] = header
     return results

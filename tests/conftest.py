@@ -4,7 +4,7 @@
 
 import pytest
 
-from plumed_bench_pp.parser import BenchmarkRow, KernelBenchmark
+from plumed_bench_pp.parser import BenchmarkRow, BenchmarkSettings, KernelBenchmark
 
 output_noheader = {
     "file": r"""PLUMED: PLUMED is starting
@@ -125,7 +125,6 @@ PLUMED: 6 Update                                        5000     0.041863     0.
         "this+plumed.dat": KernelBenchmark(
             kernel="this",
             input="plumed.dat",
-            compare={},
             rows={
                 "A Initialization": BenchmarkRow.from_dict(
                     {
@@ -680,16 +679,16 @@ PLUMED: 5 Applying (backward loop)                      2000     0.001299     0.
 PLUMED: 6 Update                                        2000     0.011222     0.000006     0.000003     0.000057
 """,
     "parsed": {
-        "BENCHSETTINGS": {
-            "BENCHKERNELS": ["this"],
-            "BENCHINPUTS": ["Coord.dat", "CoordNL.dat"],
-            "BENCHEXPECTEDSTEPS": 2500,
-            "BENCHATOMS": 500,
-            "BENCHMAXTIME": -1.0,
-            "BENCHSLEEP": 0.0,
-            "BENCHATOMDISTRIBUTION": "line",
-            "BENCHDOMAINDECOMPOSITION": True,
-        },
+        "BENCHSETTINGS": BenchmarkSettings(
+            kernels=["this"],
+            inputs=["Coord.dat", "CoordNL.dat"],
+            steps=2500,
+            atoms=500,
+            maxtime=-1.0,
+            sleep=0.0,
+            atom_distribution="line",
+            domain_decomposition=True,
+        ),
         "this+Coord.dat": KernelBenchmark(
             kernel="this",
             input="Coord.dat",
@@ -1157,16 +1156,16 @@ PLUMED: 5 Applying (backward loop)                      2000     0.001959     0.
 PLUMED: 6 Update                                        2000     0.016623     0.000008     0.000004     0.000127
 """,
     "parsed": {
-        "BENCHSETTINGS": {
-            "BENCHKERNELS": ["this", "../../src/lib/install/libplumedKernel.so"],
-            "BENCHINPUTS": ["Coord.dat"],
-            "BENCHEXPECTEDSTEPS": 2000,
-            "BENCHATOMS": 500,
-            "BENCHMAXTIME": -1.0,
-            "BENCHSLEEP": 0.0,
-            "BENCHATOMDISTRIBUTION": "line",
-            "BENCHSHUFFLED": True,
-        },
+        "BENCHSETTINGS": BenchmarkSettings(
+            kernels=["this", "../../src/lib/install/libplumedKernel.so"],
+            inputs=["Coord.dat"],
+            steps=2000,
+            atoms=500,
+            maxtime=-1.0,
+            sleep=0.0,
+            atom_distribution="line",
+            shuffled=True,
+        ),
         "this+Coord.dat": KernelBenchmark(
             kernel="this",
             input="Coord.dat",
@@ -1797,7 +1796,6 @@ PLUMED: 6 Update                                        5000     0.041863     0.
         KernelBenchmark(
             kernel="",
             input="",
-            compare={},
             rows={
                 "Plumed": BenchmarkRow.from_dict(
                     {
@@ -2087,15 +2085,15 @@ def incremental_output():
     nfiles = 6
     for i, name in enumerate(list(string.ascii_lowercase)[:nfiles], 1):
         toret[name + ".out"] = {
-            "BENCHSETTINGS": {
-                "BENCHKERNELS": ["this"],
-                "BENCHINPUTS": [f"Coord{i}.dat"],
-                "BENCHEXPECTEDSTEPS": 2000,
-                "BENCHATOMS": i * 500,
-                "BENCHMAXTIME": -1.0,
-                "BENCHSLEEP": 0.0,
-                "BENCHATOMDISTRIBUTION": "line",
-            },
+            "BENCHSETTINGS": BenchmarkSettings(
+                kernels=["this"],
+                inputs=[f"Coord{i}.dat"],
+                steps=2000,
+                atoms=i * 500,
+                maxtime=-1.0,
+                sleep=0.0,
+                atom_distribution="line",
+            ),
             f"this+Coord{i}.dat": KernelBenchmark(
                 kernel="this",
                 input=f"Coord{i}.dat",

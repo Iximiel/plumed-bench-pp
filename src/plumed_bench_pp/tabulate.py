@@ -97,7 +97,7 @@ def convert_to_table(
         if key is None:
             # print warning?
             continue
-        natoms = file["BENCHSETTINGS"]["BENCHATOMS"]
+        natoms = file["BENCHSETTINGS"].atoms
 
         tt = extract_rows(file, rows_to_extract)
         for row in rows_to_extract:
