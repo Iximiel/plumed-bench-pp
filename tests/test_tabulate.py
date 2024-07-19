@@ -7,6 +7,7 @@ import plumed_bench_pp.tabulate as pbpptbl
 
 
 def the_test_extract_row(input_data):
+    # test extract_row from BenchmarkRun
     mybrun, expectedcols = input_data
     retval = mybrun.extract_rows(rows=[pbppconst.CALCULATE, pbppconst.TOTALTIME])
     for key in expectedcols:

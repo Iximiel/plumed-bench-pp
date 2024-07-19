@@ -4,7 +4,7 @@
 
 import pytest
 
-from plumed_bench_pp.parser import BenchmarkRow, BenchmarkRun, BenchmarkSettings, KernelBenchmark
+from plumed_bench_pp.types import BenchmarkRow, BenchmarkRun, BenchmarkSettings, KernelBenchmark
 
 output_noheader = {
     "file": r"""PLUMED: PLUMED is starting
