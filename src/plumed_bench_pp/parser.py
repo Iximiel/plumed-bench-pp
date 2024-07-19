@@ -54,7 +54,13 @@ class BenchmarkRow:
     @staticmethod
     def from_re_match(result: re.Match) -> "BenchmarkRow":
         """
-        docstring
+        A method to create a BenchmarkRow instance from a regex match result.
+
+        Args:
+            result (re.Match): The regex match result containing the required groups.
+
+        Returns:
+            BenchmarkRow: A BenchmarkRow instance initialized with the extracted data.
         """
         return BenchmarkRow(
             cycles=int(result.group("Cycles")),
@@ -67,8 +73,15 @@ class BenchmarkRow:
     @staticmethod
     def from_dict(data: dict) -> "BenchmarkRow":
         """
-        docstring
+        Creates a new instance of the BenchmarkRow class from a dictionary containing the necessary data.
+
+        Args:
+            data (dict): A dictionary with the following keys: "Cycles", "Total", "Average", "Minimum", and "Maximum".
+
+        Returns:
+            BenchmarkRow: A new instance of the BenchmarkRow class initialized with the data from the dictionary.
         """
+
         return BenchmarkRow(
             cycles=data["Cycles"],
             total=data["Total"],
@@ -76,6 +89,21 @@ class BenchmarkRow:
             minimum=data["Minimum"],
             maximum=data["Maximum"],
         )
+
+
+@dataclass
+class KernelBenchmark:
+    kernel: str
+    input: str
+    compare: dict
+    rows: dict
+
+    @staticmethod
+    def empty() -> "KernelBenchmark":
+        return KernelBenchmark("", "", {}, {})
+
+    def has_data(self) -> bool:
+        return len(self.rows) > 0 or len(self.compare) > 0 or self.input != "" or self.kernel != ""
 
 
 def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
@@ -89,18 +117,18 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
         dict: A dictionary containing the parsed benchmark data.
     """
     data: dict = {}
-    kernel: dict = {}
+    kernel: KernelBenchmark = KernelBenchmark.empty()
     for line in lines:
         if result := __Kernel.search(line):
-            if len(kernel) > 0:
-                data[kernel_name(data, f'{kernel["kernel"]}+{kernel["input"]}')] = kernel
+            if kernel.has_data():
+                data[kernel_name(data, f"{kernel.kernel}+{kernel.input}")] = kernel
 
-                kernel = {}
-            kernel["kernel"] = result.group(1)
+                kernel = KernelBenchmark.empty()
+            kernel.kernel = result.group(1)
         elif result := __Input.search(line):
-            kernel["input"] = result.group(1)
+            kernel.input = result.group(1)
         elif result := __Comparative.search(line):
-            kernel["compare"] = {
+            kernel.compare = {
                 "fraction": float(result.group(1)),
                 "error": float(result.group(2)),
             }
@@ -108,21 +136,21 @@ def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
             name = result.group("name").strip()
             if name == "":
                 name = "Plumed"
-            kernel[name] = BenchmarkRow.from_re_match(result)
+            kernel.rows[name] = BenchmarkRow.from_re_match(result)
     # add the last kernel
-    if len(kernel) > 0:
-        data[kernel_name(data, f'{kernel["kernel"]}+{kernel["input"]}')] = kernel
+    if kernel.has_data():
+        data[kernel_name(data, f"{kernel.kernel}+{kernel.input}")] = kernel
     return data
 
 
-def parse_plumed_time_report(lines: list[str]) -> dict:
-    data = {}
+def parse_plumed_time_report(lines: list[str]) -> KernelBenchmark:
+    data: KernelBenchmark = KernelBenchmark.empty()
     for line in lines:
         if result := __Data.search(line):
             name = result.group("name").strip()
             if name == "":
                 name = "Plumed"
-            data[name] = BenchmarkRow.from_re_match(result)
+            data.rows[name] = BenchmarkRow.from_re_match(result)
     return data
 
 

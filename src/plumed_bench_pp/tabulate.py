@@ -30,7 +30,7 @@ def extract_rows(data: dict, rows: list) -> "dict[str, dict[str,list]]":
             continue
         tmp = {}
         for row in rows:
-            tmp[row] = data[key][row].as_list()
+            tmp[row] = data[key].rows[row].as_list()
         df[key] = tmp
 
     return df
@@ -90,7 +90,7 @@ def convert_to_table(
         for k in file:
             if k == "BENCHSETTINGS":
                 continue
-            if (file[k]["kernel"] == kernel) and _checkfile(file[k]["input"], inputlist):
+            if (file[k].kernel == kernel) and _checkfile(file[k].input, inputlist):
                 key = k
                 break
 
