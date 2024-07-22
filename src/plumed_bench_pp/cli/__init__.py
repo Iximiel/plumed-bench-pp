@@ -3,17 +3,45 @@
 # SPDX-License-Identifier: MIT
 import click
 
+#TODO: suggest this
+#https://click.palletsprojects.com/en/8.1.x/shell-completion/
+
 import plumed_bench_pp.utils as pbpputils
-
-# import plumed_bench_pp.constants as plmdconst
 from plumed_bench_pp.__about__ import __version__
+from plumed_bench_pp.constants import (
+    APPLY,
+    BM_CALCULATION_PART1,
+    BM_CALCULATION_PART2,
+    BM_FIRSTSTEP,
+    BM_INIT,
+    BM_WARMUP,
+    CALCULATE,
+    PREPARE,
+    SHARE,
+    TOTALTIME,
+    UPDATE,
+    WAIT,
+)
 from plumed_bench_pp.parser import parse_full_benchmark_output
-
-# from plumed_bench_pp.plot import plot_histo
 from plumed_bench_pp.tabulate import convert_to_table
 
+row_choiches = {
+    "BM_INIT": BM_INIT,
+    "BM_FIRSTSTEP": BM_FIRSTSTEP,
+    "BM_WARMUP": BM_WARMUP,
+    "BM_CALCULATION_PART1": BM_CALCULATION_PART1,
+    "BM_CALCULATION_PART2": BM_CALCULATION_PART2,
+    "TOTALTIME": TOTALTIME,
+    "PREPARE": PREPARE,
+    "SHARE": SHARE,
+    "WAIT": WAIT,
+    "CALCULATE": CALCULATE,
+    "APPLY": APPLY,
+    "UPDATE": UPDATE,
+}
 
-def get_filelist(files:click.Path):
+
+def get_filelist(files: click.Path):
     filelist = []
 
     for f in files:
@@ -22,11 +50,11 @@ def get_filelist(files:click.Path):
 
     return filelist
 
-def get_data(filelist,rows):
-    data={}
+
+def get_data(filelist, rows):
+    data = {}
     for k in pbpputils.get_kernels(filelist):
-            data[k] = convert_to_table(filelist, rows, kernel=
-            k, inputlist=".dat")
+        data[k] = convert_to_table(filelist, rows, kernel=k, inputlist=".dat")
     return data
 
 
@@ -36,29 +64,41 @@ def kernels(files):
     """List the kernels in the given files"""
     filelist = get_filelist(files)
 
-
     for p in pbpputils.get_kernels(filelist):
         click.echo(p)
 
 
 @click.command()
 @click.argument("files", type=click.Path(exists=True), nargs=-1)
-@click.option("--output", "-o", type=click.STRING)
-def plot(files, output):
+@click.option("--output", "-o", type=click.STRING, help="The output file to write the plot to")
+@click.option(
+    "--row",
+    "-r",
+    type=click.Choice(list(row_choiches.keys())),
+    multiple=False,
+    default="TOTALTIME",
+    help="The row to plot",
+)
+def plot(files, output, row):
     """Plot the data in the given files
-    
+
     This assumes that the simulation data is given in kernels"""
-    import matplotlib.pyplot as plt 
+    import matplotlib.pyplot as plt
+
     # import matplotlib
     # matplotlib.use('Agg')
+    # print(f"Interactive mode: {matplotlib.is_interactive()}")
+    # print(f"matplotlib backend: {matplotlib.rcParams['backend']}")
     from plumed_bench_pp.plot import plot_histo
-    
+
+    click.echo(f"{row=}")
+    rowtoplot = row_choiches[row]
     # click.echo(f"{files=}")
     # click.echo(f"{output=}")
     filelist = get_filelist(files)
     data = get_data(filelist, ["Plumed"])
-    fig, ax=plt.subplots()
-    plot_histo(ax,[data[k] for k in pbpputils.get_kernels(filelist)],"Plumed")
+    fig, ax = plt.subplots()
+    plot_histo(ax, [data[k] for k in pbpputils.get_kernels(filelist)], rowtoplot)
 
     if output is None:
         plt.show()
