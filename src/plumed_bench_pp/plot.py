@@ -27,6 +27,7 @@ def plot_histo(
     colors: "list|None" = None,
     relative_to: "dict[str, DataFrame]| Any" = None,
     relative_to_row: "str|None" = None,
+    titles: "list[str]|None" = None,
 ) -> "list[BarContainer]":
     """
     Plot a histogram based on the provided data for a specified row.
@@ -83,7 +84,19 @@ def plot_histo(
         if normalize_to_cycles:
             toplot = toplot / d[row_cycles].Cycles.values
         toplot = toplot / divideby
-        bars.append(ax.bar(x + offset, toplot, width, color=colors[multiplier] if colors else None))
+        xpos = x
+        if len(x) > len(d[row].natoms.values):
+            # with this if a natom is missing it does not create errors, this will conflict is x is inpute as not None
+            xpos = d[row].natoms.values
+        bars.append(
+            ax.bar(
+                xpos + offset,
+                toplot,
+                width,
+                color=colors[multiplier] if colors else None,
+                label=titles[multiplier] if titles else None,
+            )
+        )
     return bars
 
 
