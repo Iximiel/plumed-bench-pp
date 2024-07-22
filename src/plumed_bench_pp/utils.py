@@ -29,9 +29,6 @@ def kernel_name(data: dict, name: str) -> str:
     return _append_kernel_rec(data.keys(), name, 0)
 
 
-# TODO: add a extract filenames extract and extract kernel+file combination
-
-
 def get_kernels(data: dict) -> set[str]:
     toret = []
     if isinstance(data, BenchmarkRun):
@@ -50,3 +47,13 @@ def get_inputfiles(data: dict) -> set[str]:
         toret += [d.runs[k].input for k in d.runs]
 
     return set(toret)
+
+
+def get_kernels_and_inputfiles(data: dict) -> list[str]:
+    toret = []
+    if isinstance(data, BenchmarkRun):
+        data = [data]
+    for d in _common_iterable(data):
+        toret += [(d.runs[k].kernel, d.runs[k].input) for k in d.runs]
+
+    return toret
