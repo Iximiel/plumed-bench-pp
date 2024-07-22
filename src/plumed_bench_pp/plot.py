@@ -113,7 +113,7 @@ def plot_histo_relative(
     colors: "list|None" = None,
 ) -> "list[BarContainer]":
     """a shortcut to generate a relative histogram, with relative_to options set as positional arguments"""
-    plot_histo(
+    return plot_histo(
         ax,
         data,
         row,

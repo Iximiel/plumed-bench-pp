@@ -29,7 +29,7 @@ def kernel_name(data: dict, name: str) -> str:
     return _append_kernel_rec(data.keys(), name, 0)
 
 
-def get_kernels(data: dict) -> set[str]:
+def get_kernels(data: "BenchmarkRun|list[BenchmarkRun]") -> "set[str]":
     toret = []
     if isinstance(data, BenchmarkRun):
         data = [data]
@@ -39,7 +39,7 @@ def get_kernels(data: dict) -> set[str]:
     return set(toret)
 
 
-def get_inputfiles(data: dict) -> set[str]:
+def get_inputfiles(data: "BenchmarkRun|list[BenchmarkRun]") -> "set[str]":
     toret = []
     if isinstance(data, BenchmarkRun):
         data = [data]
@@ -49,7 +49,7 @@ def get_inputfiles(data: dict) -> set[str]:
     return set(toret)
 
 
-def get_kernels_and_inputfiles(data: dict) -> list[str]:
+def get_kernels_and_inputfiles(data: "BenchmarkRun|list[BenchmarkRun]") -> "list[tuple[str, str]]":
     toret = []
     if isinstance(data, BenchmarkRun):
         data = [data]
