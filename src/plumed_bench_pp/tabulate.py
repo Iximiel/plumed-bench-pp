@@ -56,7 +56,7 @@ def convert_to_table(
         filesdict (dict | list): A dictionary containing file data parsed by
             :func:`parse_benchmark_output.`
         rows_to_extract (list[str]): A list of strings representing the rows
-            to extract from the files the most common ones are in :module:`constants`.
+            to extract from the files the most common ones are in :mod:`plumed_bench_pp.constants`.
         kernel (str): A string specifying the kernel to filter files by.
         inputlist (str | list[str] | re.Pattern): A string, list of strings,
             or regular expression pattern to filter the plumed input files used
