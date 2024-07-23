@@ -7,9 +7,8 @@ import re
 
 from pandas import DataFrame
 
-from plumed_bench_pp.constants import (
-    TIMINGCOLS,
-)
+from plumed_bench_pp.constants import TIMINGCOLS
+from plumed_bench_pp.utils import _common_iterable
 
 
 def _checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> bool:
@@ -50,18 +49,11 @@ def convert_to_table(
         A dictionary where keys are row names and values are DataFrames containing the extracted data.
     """
 
-    def common_iterable(obj):
-        """Iterates over the values of a dict or any iterable"""
-        if isinstance(obj, dict):
-            yield from obj.values()
-        else:
-            yield from obj
-
     data: dict[str, DataFrame] = {}
     tmp: dict = {}
     for row in rows_to_extract:
         tmp[row] = []
-    for file in common_iterable(filesdict):
+    for file in _common_iterable(filesdict):
         key = None
         for k in file.runs:
             if (file.runs[k].kernel == kernel) and _checkfile(file.runs[k].input, inputlist):

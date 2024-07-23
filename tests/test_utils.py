@@ -2,7 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
-from plumed_bench_pp.utils import kernel_name
+from plumed_bench_pp.utils import get_inputfiles, get_kernels, get_kernels_and_inputfiles, kernel_name
 
 
 def test_kernel_name():
@@ -24,3 +24,75 @@ def test_kernel_name():
     assert mydict["bar"] == "bar->1"
     assert "bar(1)" in mydict
     assert mydict["bar(1)"] == "bar->0"
+
+
+def test_get_kernels(incremental_output):
+    parsed_input, _, _ = incremental_output
+    for k in parsed_input:
+        ret = get_kernels(parsed_input[k])
+        for run in parsed_input[k].runs.values():
+            assert run.kernel in ret
+
+
+def test_get_inputfiles(incremental_output):
+    parsed_input, _, _ = incremental_output
+    for k in parsed_input:
+        ret = get_inputfiles(parsed_input[k])
+        for run in parsed_input[k].runs.values():
+            assert run.input in ret
+
+
+def test_get_kernels_dict(incremental_output):
+    parsed_input, _, _ = incremental_output
+    ret = get_kernels(parsed_input)
+    for myinput in parsed_input.values():
+        for run in myinput.runs.values():
+            assert run.kernel in ret
+
+
+def test_get_inputfiles_dict(incremental_output):
+    parsed_input, _, _ = incremental_output
+    ret = get_inputfiles(parsed_input)
+    for myinput in parsed_input.values():
+        for run in myinput.runs.values():
+            assert run.input in ret
+
+
+def test_get_kernels_list(incremental_output):
+    parsed_input, _, _ = incremental_output
+    ret = get_kernels([parsed_input[k] for k in parsed_input])
+    for myinput in parsed_input.values():
+        for run in myinput.runs.values():
+            assert run.kernel in ret
+
+
+def test_get_inputfiles_list(incremental_output):
+    parsed_input, _, _ = incremental_output
+    ret = get_inputfiles([parsed_input[k] for k in parsed_input])
+    for myinput in parsed_input.values():
+        for run in myinput.runs.values():
+            assert run.input in ret
+
+
+def test_get_kernels_and_inputfiles(incremental_output):
+    parsed_input, _, _ = incremental_output
+    for myinput in parsed_input.values():
+        ret = get_kernels_and_inputfiles(parsed_input)
+        for run in myinput.runs.values():
+            assert (run.kernel, run.input) in ret
+
+
+def test_get_kernels_and_inputfiles_dict(incremental_output):
+    parsed_input, _, _ = incremental_output
+    ret = get_kernels_and_inputfiles(parsed_input)
+    for myinput in parsed_input.values():
+        for run in myinput.runs.values():
+            assert (run.kernel, run.input) in ret
+
+
+def test_get_kernels_and_inputfiles_list(incremental_output):
+    parsed_input, _, _ = incremental_output
+    ret = get_kernels_and_inputfiles([parsed_input[k] for k in parsed_input])
+    for myinput in parsed_input.values():
+        for run in myinput.runs.values():
+            assert (run.kernel, run.input) in ret

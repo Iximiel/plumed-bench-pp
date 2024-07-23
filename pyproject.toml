@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "plumed-bench-pp"
 dynamic = ["version"]
-description = ""
+description = "A simpe package to rapidly postprocessing the output of plumed benchmarks"
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
@@ -23,12 +23,15 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["pandas"]
+dependencies = ["matplotlib","pandas","click"]
 
 [project.urls]
-Documentation = "https://github.com//plumed-bench-pp#readme"
-Issues = "https://github.com//plumed-bench-pp/issues"
-Source = "https://github.com//plumed-bench-pp"
+Documentation = "https://github.com/Iximiel/plumed-bench-pp#readme"
+Issues = "https://github.com/Iximiel/plumed-bench-pp/issues"
+Source = "https://github.com/Iximiel/plumed-bench-pp"
+
+[project.scripts]
+plmdbpp = "plumed_bench_pp.cli:plmdbpp"
 
 [tool.hatch.version]
 path = "src/plumed_bench_pp/__about__.py"
