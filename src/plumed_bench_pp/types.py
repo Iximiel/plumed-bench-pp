@@ -14,7 +14,17 @@ if TYPE_CHECKING:
 
 @dataclass
 class BenchmarkRow:
-    # name: str
+    """
+    A class representing a single row in the benchmark table.
+
+    Args:
+        cycles (int): The number of benchmark cycles.
+        total (float): The total time in seconds.
+        average (float): The average time in seconds.
+        minimum (float): The minimum time in seconds.
+        maximum (float): The maximum time in seconds.
+    """
+
     cycles: int
     total: float
     average: float
@@ -22,6 +32,9 @@ class BenchmarkRow:
     maximum: float
 
     def as_list(self) -> list:
+        """
+        A method to return the BenchmarkRow attributes as a list.
+        """
         return [self.cycles, self.total, self.average, self.minimum, self.maximum]
 
     @staticmethod
@@ -66,6 +79,16 @@ class BenchmarkRow:
 
 @dataclass
 class KernelBenchmark:
+    """
+    A class representing a benchmark for a kernel-input pair.
+
+    Attributes:
+        kernel (str): The name of the kernel.
+        input (str): The name of the input file.
+        compare (dict): A dictionary containing the fraction and error of the benchmark.
+        rows (dict): A dictionary containing the benchmark rows.
+    """
+
     kernel: str = ""
     input: str = ""
     compare: dict = field(default_factory=dict)
@@ -77,19 +100,38 @@ class KernelBenchmark:
 
 @dataclass
 class BenchmarkSettings:
+    """
+    A class representing the settings for benchmarking.
+    """
+
+    #: The list of kernels as specified in the command line
     kernels: list = field(default_factory=list)
+    #: The list of input files as specified in the command line
     inputs: list = field(default_factory=list)
+    #: The number of benchmark steps as specified in the command line
     steps: int = -1
+    #: The number of atoms in the system as specified in the command line
     atoms: int = -1
+    #: The maximum time in seconds as specified in the command line
     maxtime: float = -1.0
+    #: The time in seconds to sleep between benchmark steps as specified in the command line
     sleep: float = 0.0
+    #: The type of atom distribution as specified in the command line
     atom_distribution: str = "line"
+    #: The shuffled option, as specified in the command line
     shuffled: bool = False
+    #: The domain decomposition option, as specified in the command line
     domain_decomposition: bool = False
 
 
 @dataclass
 class BenchmarkRun:
+    """
+    A class representing a benchmark run.
+
+    It contains the settings as a :class:`.BenchmarkSettings` and the results of each kernel-input file combination as a :class:`.KernelBenchmark` dictionary.
+    """
+
     settings: BenchmarkSettings = field(default_factory=BenchmarkSettings)
     runs: dict[str, KernelBenchmark] = field(default_factory=dict)
 

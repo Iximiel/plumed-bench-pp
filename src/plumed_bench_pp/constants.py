@@ -31,7 +31,7 @@ TOTALTIME = "Plumed"
 PREPARE = "1 Prepare dependencies"
 #: time passed in PlumedMain::shareData()
 SHARE = "2 Sharing data"
-#: time passed in PlumedMain::waitData() 
+#: time passed in PlumedMain::waitData()
 WAIT = "3 Waiting for data"
 #: time passed in PlumedMain::justCalculate()
 CALCULATE = "4 Calculating (forward loop)"

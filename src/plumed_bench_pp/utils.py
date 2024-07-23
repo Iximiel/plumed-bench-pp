@@ -16,6 +16,7 @@ def _append_kernel_rec(keys: "list[str] | Iterable[str]", name: str, level: int)
         return _append_kernel_rec(keys, name, level + 1)
     return nm
 
+
 def kernel_name(data: dict, name: str) -> str:
     return _append_kernel_rec(data.keys(), name, 0)
 
@@ -26,6 +27,7 @@ def _common_iterable(obj):
         yield from obj.values()
     else:
         yield from obj
+
 
 def get_kernels(data: "BenchmarkRun|list[BenchmarkRun]") -> "set[str]":
     """
@@ -38,7 +40,7 @@ def get_kernels(data: "BenchmarkRun|list[BenchmarkRun]") -> "set[str]":
     Returns:
         set[str]: A set of unique kernel names extracted from the given data.
     """
-    
+
     toret = []
     if isinstance(data, BenchmarkRun):
         data = [data]
