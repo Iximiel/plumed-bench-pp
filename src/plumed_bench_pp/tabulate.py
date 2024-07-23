@@ -6,11 +6,17 @@
 from __future__ import annotations
 
 import re
+from typing import TYPE_CHECKING
 
 from pandas import DataFrame
 
 from plumed_bench_pp.constants import TIMINGCOLS
 from plumed_bench_pp.utils import _common_iterable
+
+if TYPE_CHECKING:
+    from typing import Any
+
+    from plumed_bench_pp.types import BenchmarkRun
 
 
 def _checkfile(fname: str, pattern: str | list[str] | re.Pattern) -> bool:
@@ -35,20 +41,29 @@ def _checkfile(fname: str, pattern: str | list[str] | re.Pattern) -> bool:
 
 
 def convert_to_table(
-    filesdict: dict | list, rows_to_extract: list[str], kernel: str, inputlist: str | list[str] | re.Pattern
+    filesdict: dict[Any, BenchmarkRun] | list[BenchmarkRun],
+    rows_to_extract: list[str],
+    kernel: str,
+    inputlist: str | list[str] | re.Pattern,
 ) -> dict[str, DataFrame]:
     """
-    Generate a table using the specified rows.
-    Extracts the specified rows from the given files list or dict filtering the specified kernel and input files.
+    Generates a table using the specified rows.
 
-    Parameters:
-        - filesdict: A dictionary containing file data parsed by plumed_bench_pp.parser.parse_benchmark_output
-        - rows_to_extract: A list of strings representing the rows to extract from the files
-        - kernel: A string specifying the kernel to filter files by
-        - inputlist: A string, list of strings, or regular expression pattern to filter the plumed input files used by desired kernel
+    Extracts the specified rows from the given files list or dict,
+    filtering the specified kernel and input files.
+
+    Args:
+        filesdict (dict | list): A dictionary containing file data parsed by
+            :func:`parse_benchmark_output.`
+        rows_to_extract (list[str]): A list of strings representing the rows
+            to extract from the files the most common ones are in :mod:`plumed_bench_pp.constants`.
+        kernel (str): A string specifying the kernel to filter files by.
+        inputlist (str | list[str] | re.Pattern): A string, list of strings,
+            or regular expression pattern to filter the plumed input files used
+            by the desired kernel.
 
     Returns:
-        A dictionary where keys are row names and values are DataFrames containing the extracted data.
+        dict[str, DataFrame]: A dictionary containing the table data indexed by report's rows
     """
 
     data: dict[str, DataFrame] = {}

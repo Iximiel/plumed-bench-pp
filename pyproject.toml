@@ -51,6 +51,7 @@ branch = true
 parallel = true
 omit = [
   "src/plumed_bench_pp/__about__.py",
+  "docs"
 ]
 
 [tool.coverage.paths]
@@ -65,8 +66,12 @@ exclude_lines = [
 ]
 
 #lint and formatting:
+[tool.ruff]
+# exclude = ["docs/"]
+
 [tool.ruff.lint.extend-per-file-ignores]
 "tests/conftest.py" = ["W291"]
+"docs/source/conf.py" = ["INP001","A001"]
 
 [[tool.hatch.envs.hatch-test.matrix]]
 python = ["3.8", "3.9", "3.10", "3.11", "3.12"]

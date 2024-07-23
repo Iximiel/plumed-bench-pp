@@ -32,11 +32,13 @@ def plot_histo(
     """
     Plot a histogram based on the provided data for a specified row.
 
-    It can be set up to normalize the data to cycles or relative to another row.
-    It can be set up to use a custom x-axis or colors for the bars.
-    It can be set up to plot relative to another dataset, dividing the value of each olume by that number.
+    It can be set up to normalize the data to cycles (normalize_to_cycles) and/or relative to another row.
 
-    Parameters:
+    It can be set up to use a custom x-axis or colors for the bars.
+
+    It can be set up to plot relative to another dataset, dividing the value of each column by that number.
+
+    Args:
         ax (Axes): The matplotlib axes to plot the histogram.
         data (list[dict]|dict[str,DataFrame]): The data to be plotted.
         row (str): The row in the data to be plotted.
@@ -112,7 +114,26 @@ def plot_histo_relative(
     x: "ndarray|None" = None,
     colors: "list|None" = None,
 ) -> "list[BarContainer]":
-    """a shortcut to generate a relative histogram, with relative_to options set as positional arguments"""
+    """
+    Plots a histogram of the given data relative to the `relative_to` data.
+
+    Args:
+        ax (matplotlib.axes.Axes): The axes on which to plot the histogram.
+        data (list[dict] | dict[str, pandas.DataFrame]): The data to plot.
+        row (str): The row to plot.
+        relative_to (dict[str, pandas.DataFrame] | Any): The data to which the values of the current data are relative to.
+        relative_to_row (str | None): The row in the `relative_to` data to use for the reference values.
+        barwidth (float): The width of the bars in the histogram.
+        normalize_to_cycles (bool | str): If True, the values of the current data are normalized to the number of cycles.
+        x (numpy.ndarray | None): The x values to use for the plot. If None, the x values are determined by the `natoms` values in the current data.
+        colors (list | None): The colors to use for the bars in the histogram.
+
+    Returns:
+        list[matplotlib.container.BarContainer]: The bars plotted in the histogram.
+
+    See Also:
+        plot_histo: A function that plots a histogram of the given data.
+    """
     return plot_histo(
         ax,
         data,
