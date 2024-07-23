@@ -16,3 +16,4 @@ Documentation
    plot
    types
    constants
+   utils
