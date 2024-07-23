@@ -2,8 +2,14 @@
 #
 # SPDX-License-Identifier: MIT
 
-import re
+# for py3.8
+from __future__ import annotations
+
 from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import re
 
 
 @dataclass
@@ -19,7 +25,7 @@ class BenchmarkRow:
         return [self.cycles, self.total, self.average, self.minimum, self.maximum]
 
     @staticmethod
-    def from_re_match(result: re.Match) -> "BenchmarkRow":
+    def from_re_match(result: re.Match) -> BenchmarkRow:
         """
         A method to create a BenchmarkRow instance from a regex match result.
 
@@ -38,7 +44,7 @@ class BenchmarkRow:
         )
 
     @staticmethod
-    def from_dict(data: dict) -> "BenchmarkRow":
+    def from_dict(data: dict) -> BenchmarkRow:
         """
         Creates a new instance of the BenchmarkRow class from a dictionary containing the necessary data.
 
@@ -87,7 +93,7 @@ class BenchmarkRun:
     settings: BenchmarkSettings = field(default_factory=BenchmarkSettings)
     runs: dict[str, KernelBenchmark] = field(default_factory=dict)
 
-    def extract_rows(self, rows: list) -> "dict[str, dict[str,list]]":
+    def extract_rows(self, rows: list) -> dict[str, dict[str, list]]:
         """
         Extracts the specified rows from the given data dictionary.
         Works with the results of plumed_bench_pp.parser.parse_benchmark_output

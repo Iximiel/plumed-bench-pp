@@ -2,6 +2,8 @@
 #
 # SPDX-License-Identifier: MIT
 
+# for py3.8
+from __future__ import annotations
 
 import re
 
@@ -11,7 +13,7 @@ from plumed_bench_pp.constants import TIMINGCOLS
 from plumed_bench_pp.utils import _common_iterable
 
 
-def _checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> bool:
+def _checkfile(fname: str, pattern: str | list[str] | re.Pattern) -> bool:
     """
     A function to check if the file name matches the provided pattern.
 
@@ -33,8 +35,8 @@ def _checkfile(fname: str, pattern: "str|list[str]|re.Pattern") -> bool:
 
 
 def convert_to_table(
-    filesdict: "dict|list", rows_to_extract: list[str], kernel: str, inputlist: "str|list[str]|re.Pattern"
-) -> "dict[str,DataFrame]":
+    filesdict: dict | list, rows_to_extract: list[str], kernel: str, inputlist: str | list[str] | re.Pattern
+) -> dict[str, DataFrame]:
     """
     Generate a table using the specified rows.
     Extracts the specified rows from the given files list or dict filtering the specified kernel and input files.
