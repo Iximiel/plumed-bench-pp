@@ -2,6 +2,9 @@
 #
 # SPDX-License-Identifier: MIT
 
+# for py3.8
+from __future__ import annotations
+
 import re
 from itertools import dropwhile
 from typing import TYPE_CHECKING
@@ -38,7 +41,7 @@ __BMIsSuffled = re.compile(r"BENCH:  Using --shuffled")
 __BMUseDomainDecomposition = re.compile(r"BENCH:  Using --domain-decomposition")
 
 
-def parse_benchmark_output(lines: "list[str] | Iterable[str]") -> dict:
+def parse_benchmark_output(lines: list[str] | Iterable[str]) -> dict:
     """
     Parses the benchmark output lines to extract kernel information and performance statistics.
 
