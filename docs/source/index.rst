@@ -6,11 +6,11 @@
 plumed-bench-pp documentation
 =============================
 
-.. include:: ../../README.md
+
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-.. automodule:: plumed_bench_pp.plot
-   :members:
+   
+   readme_link
+   documentation
