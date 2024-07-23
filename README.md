@@ -2,6 +2,7 @@
 
 [![PyPI - Version](https://img.shields.io/pypi/v/plumed-bench-pp.svg)](https://pypi.org/project/plumed-bench-pp)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/plumed-bench-pp.svg)](https://pypi.org/project/plumed-bench-pp)
+[![Hatch project](https://img.shields.io/badge/%F0%9F%A5%9A-Hatch-4051b5.svg)](https://github.com/pypa/hatch)
 
 A small toolset for postprocess `plumed benchmark` and the plumed time report at the end of the simulations
 
