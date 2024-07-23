@@ -112,11 +112,6 @@ def parse_full_benchmark_output(lines: list[str]) -> BenchmarkRun:
         BenchmarkRun: The parsed benchmark run.
     """
 
-
-
-    
-    
-
     header = BenchmarkSettings()
     if "BENCH:  Welcome to PLUMED benchmark" in lines[0]:
         # there is an header :)

@@ -1,26 +1,18 @@
 Documentation
 =============
 
-Parser
-------
-
-.. automodule:: plumed_bench_pp.parser
+.. automodule:: plumed_bench_pp
    :members:
+   :show-inheritance:
+   :special-members:
+   :private-members:
 
-Tabulate
---------
+.. autosummary::
+   :recursive:
+   :toctree: generated
 
-.. automodule:: plumed_bench_pp.tabulate
-   :members:
-
-Plot
-----
-
-.. automodule:: plumed_bench_pp.plot
-   :members:
-
-Types
------
-
-.. automodule:: plumed_bench_pp.types
-   :members:
+   parser
+   tabulate
+   plot
+   types
+   constants
