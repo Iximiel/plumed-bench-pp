@@ -43,7 +43,8 @@ __BMUseDomainDecomposition = re.compile(r"BENCH:  Using --domain-decomposition")
 
 def parse_benchmark_output(lines: list[str] | Iterable[str]) -> dict:
     """
-    Parses the benchmark output lines to extract kernel information and performance statistics.
+    Parses the benchmark report lines into a dictionary.
+    If you have a complete run with the header use :func:`parse_full_benchmark_output`
 
     Args:
         lines (list[str]): The list of lines containing benchmark output data.
@@ -79,6 +80,17 @@ def parse_benchmark_output(lines: list[str] | Iterable[str]) -> dict:
 
 
 def parse_plumed_time_report(lines: list[str]) -> KernelBenchmark:
+    """
+    Parses the given list of lines containing the time report that plumed prints at the end of the runs.
+
+    Args:
+        lines (list[str]): A list of lines containing the Plumed time report.
+
+    Returns:
+        KernelBenchmark: The parsed time report.
+
+    """
+
     data: KernelBenchmark = KernelBenchmark()
     for line in lines:
         if result := __Data.search(line):
@@ -90,7 +102,20 @@ def parse_plumed_time_report(lines: list[str]) -> KernelBenchmark:
 
 
 def parse_full_benchmark_output(lines: list[str]) -> BenchmarkRun:
-    # more or less the output for the times is few lines after the message for the MD starting
+    """
+    A function to parse the full benchmark output.
+
+    Args:
+        lines (list[str]): The complete output of the benchmark run. Already split into lines.
+
+    Returns:
+        BenchmarkRun: The parsed benchmark run.
+    """
+
+
+
+    
+    
 
     header = BenchmarkSettings()
     if "BENCH:  Welcome to PLUMED benchmark" in lines[0]:
