@@ -5,6 +5,7 @@
 from typing import TYPE_CHECKING
 
 import numpy as np
+import pandas as pd
 
 if TYPE_CHECKING:
     from typing import Any
@@ -47,7 +48,7 @@ def plot_histo(
         normalize_to_cycles (bool|str, optional): Flag to normalize data to cycles, if set to a row name the cycles of that row will be used. Defaults to False.
         colors (list|None, optional): The colors for the bars in the histogram. Defaults to None.
         relative_to (dict[str, DataFrame]| Any, optional): Data for relative comparison, you can pass a dict contianing the collection of data or the address or index of the desired base in the passed data. Defaults to None.
-        relative_to_row (str|None, optional): The row for relative comparison. Defaults to None.
+        equidistant_bars (bool, optional):If set to false the center of the groups bars will be in the number of atoms, by default the bars are evenly spaced. Defaults to True.
 
     Returns:
         list: The list of plotted bars.
@@ -69,29 +70,35 @@ def plot_histo(
             relative_to = data[relative_to]
         if relative_to_row is None:
             relative_to_row = row
-        divideby = relative_to[relative_to_row].Total.values
+        divideby = relative_to[relative_to_row]
         if normalize_to_cycles:
             divideby = divideby / relative_to[row_cycles].Cycles.values
 
     ncols = len(data)
-    # num_bars=np.max([len(d[row]) for d in data])
 
-    x = np.arange(len(data[0][row])) if equidistant_bars else data[0][row].natoms.values
-    xnames = data[0][row].natoms.values
+    xnames = pd.concat([d[row] for d in data]).index.unique()
+    xdict = {int(name): i for i, name in enumerate(xnames)}
+    num_bars = len(xnames)
+    x = np.arange(num_bars) if equidistant_bars else xnames
     width = np.min(np.diff(np.sort(x))) * (barwidth / ncols)
     ax.set_xticks(x + width * 0.5 * (ncols - 1), xnames)
     bars = []
     for multiplier, d in enumerate(data):
         offset = width * multiplier
-
-        toplot = d[row].Total.values
+        toplot = d[row].copy()
         if normalize_to_cycles:
             toplot = toplot / d[row_cycles].Cycles.values
-        toplot = toplot / divideby
+        toplot = toplot.div(divideby, axis="index", fill_value=None).dropna().Total.values
+
         xpos = x
-        if len(x) > len(d[row].natoms.values):
-            # with this if a natom is missing it does not create errors, this will conflict is x is inpute as not None
-            xpos = d[row].natoms.values
+        if len(x) != len(d[row]):
+            if equidistant_bars:
+                xpos = []
+                for xname in d[row].index.values:
+                    xpos.append(xdict[int(xname)])
+                xpos = np.array(xpos)
+            else:
+                xpos = d[row].index.values
         bars.append(
             ax.bar(
                 xpos + offset,
