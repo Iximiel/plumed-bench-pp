@@ -87,5 +87,5 @@ def convert_to_table(
             tmp[row].append([natoms, *tt[key][row]])
 
     for row in rows_to_extract:
-        data[row] = DataFrame(tmp[row], columns=["natoms", *TIMINGCOLS]).sort_values(by="natoms")
+        data[row] = DataFrame(tmp[row], columns=["natoms", *TIMINGCOLS]).set_index("natoms").sort_index()
     return data
