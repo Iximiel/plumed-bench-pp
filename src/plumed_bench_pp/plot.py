@@ -62,7 +62,7 @@ def plot_histo(
         # and the info on the effective number of steps is in the timer relative to apply or calculate
         row_cycles = normalize_to_cycles
         normalize_to_cycles = True
-    divideby = 1
+    # divideby: "DataFrame|int" = 1
     if relative_to is not None:
         # relative to mode
         if not isinstance(relative_to, dict):
@@ -73,6 +73,8 @@ def plot_histo(
         divideby = relative_to[relative_to_row]
         if normalize_to_cycles:
             divideby = divideby.div(relative_to[row_cycles].Cycles, axis="index")
+    else:
+        divideby = 1
 
     ncols = len(data)
 
