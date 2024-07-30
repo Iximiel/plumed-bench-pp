@@ -72,7 +72,7 @@ def plot_histo(
             relative_to_row = row
         divideby = relative_to[relative_to_row]
         if normalize_to_cycles:
-            divideby = divideby / relative_to[row_cycles].Cycles.values
+            divideby = divideby.div(relative_to[row_cycles].Cycles, axis="index")
 
     ncols = len(data)
 
@@ -87,7 +87,7 @@ def plot_histo(
         offset = width * multiplier
         toplot = d[row].copy()
         if normalize_to_cycles:
-            toplot = toplot / d[row_cycles].Cycles.values
+            toplot = toplot.div(d[row_cycles].Cycles, axis="index")
         toplot = toplot.div(divideby, axis="index", fill_value=None).dropna().Total.values
 
         xpos = x
