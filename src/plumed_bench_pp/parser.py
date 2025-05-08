@@ -34,6 +34,7 @@ __BMKernelList = re.compile(r"BENCH:  Using --kernel=(.+)")
 __BMPlumedList = re.compile(r"BENCH:  Using --plumed=(.+)")
 __BMSteps = re.compile(r"BENCH:  Using --nsteps=(\d+)")
 __BMNatoms = re.compile(r"BENCH:  Using --natoms=(\d+)")
+__BMNatomsOverriden = re.compile(r"BENCH:  Distribution overrode --natoms, Using --natoms=(\d+)")
 __BMMaxtime = re.compile(r"BENCH:  Using --maxtime=({__FLOATMATCH}|[-+]?\d+)")
 __BMSleep = re.compile(r"BENCH:  Using --sleep=(\d+)")
 __BMAtomDistributions = re.compile(r"BENCH:  Using --atom-distribution=(.+)")
@@ -118,6 +119,7 @@ def parse_full_benchmark_output(lines: list[str]) -> BenchmarkRun:
         for line in lines:
             if "BENCH:  Initializing the setup of the kernel(s)" in line:
                 break
+            atoms_overriden = False
             if result := __BMKernelList.search(line):
                 header.kernels = result.group(1).split(":")
             elif result := __BMPlumedList.search(line):
@@ -125,6 +127,10 @@ def parse_full_benchmark_output(lines: list[str]) -> BenchmarkRun:
             elif result := __BMSteps.search(line):
                 header.steps = int(result.group(1))
             elif result := __BMNatoms.search(line):
+                if not atoms_overriden:
+                    header.atoms = int(result.group(1))
+            elif result := __BMNatomsOverriden.search(line):
+                atoms_overriden = True
                 header.atoms = int(result.group(1))
             elif result := __BMMaxtime.search(line):
                 header.maxtime = float(result.group(1))

@@ -38,3 +38,9 @@ def test_parse_full_benchmark_output2k1f(full_benchmark_output_2k1f):
     example, expected = full_benchmark_output_2k1f
     lines = example.split("\n")
     assert parse_full_benchmark_output(lines) == expected
+
+
+def test_parse_full_benchmark_output2k1f_overridenatoms(full_benchmark_output_2k1f_override):
+    example, expected = full_benchmark_output_2k1f_override
+    lines = example.split("\n")
+    assert parse_full_benchmark_output(lines) == expected
