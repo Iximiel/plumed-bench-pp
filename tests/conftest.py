@@ -1460,6 +1460,190 @@ PLUMED: 6 Update                                        2000     0.016623     0.
     },
 }
 
+output_2k1f_override = {
+    "file": r"""BENCH:  Welcome to PLUMED benchmark
+BENCH:  Using --kernel=this:../../src/lib/install/libplumedKernel.so
+BENCH:  Using --plumed=Coord.dat
+BENCH:  Using --nsteps=2000
+BENCH:  Using --natoms=5
+BENCH:  Using --maxtime=-1
+BENCH:  Using --sleep=0
+BENCH:  Using --atom-distribution=line
+BENCH:  Using --shuffled
+BENCH:  Distribution overrode --natoms, Using --natoms=500
+BENCH:  Initializing the setup of the kernel(s)
+PLUMED: PLUMED is starting
+PLUMED: Version: 2.10.0-dev (git: 639e81047-dirty) compiled on Jul 12 2024 at 11:29:54
+PLUMED: Please cite these papers when using PLUMED [1][2]
+PLUMED: For further information see the PLUMED web page at http://www.plumed.org
+PLUMED: Root: /usr/local/lib/plumed
+PLUMED: LibraryPath: ../../src/lib/install/libplumedKernel.so
+PLUMED: For installed feature, see /usr/local/lib/plumed/src/config/config.txt
+PLUMED: Molecular dynamics engine: benchmarks
+PLUMED: Precision of reals: 8
+PLUMED: Running over 1 node
+PLUMED: Number of threads: 1
+PLUMED: Cache line size: 512
+PLUMED: Number of atoms: 500
+PLUMED: File suffix: 
+PLUMED: FILE: Coord.dat
+PLUMED: Action COORDINATION
+PLUMED:   with label cpu
+PLUMED:   between two groups of 500 and 0 atoms
+PLUMED:   first group:
+PLUMED:   1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  
+PLUMED:   25  26  27  28  29  30  31  32  33  34  35  36  37  38  39  40  41  42  43  44  45  46  47  48  49  
+PLUMED:   50  51  52  53  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68  69  70  71  72  73  74  
+PLUMED:   75  76  77  78  79  80  81  82  83  84  85  86  87  88  89  90  91  92  93  94  95  96  97  98  99  
+PLUMED:   100  101  102  103  104  105  106  107  108  109  110  111  112  113  114  115  116  117  118  119  120  121  122  123  124  
+PLUMED:   125  126  127  128  129  130  131  132  133  134  135  136  137  138  139  140  141  142  143  144  145  146  147  148  149  
+PLUMED:   150  151  152  153  154  155  156  157  158  159  160  161  162  163  164  165  166  167  168  169  170  171  172  173  174  
+PLUMED:   175  176  177  178  179  180  181  182  183  184  185  186  187  188  189  190  191  192  193  194  195  196  197  198  199  
+PLUMED:   200  201  202  203  204  205  206  207  208  209  210  211  212  213  214  215  216  217  218  219  220  221  222  223  224  
+PLUMED:   225  226  227  228  229  230  231  232  233  234  235  236  237  238  239  240  241  242  243  244  245  246  247  248  249  
+PLUMED:   250  251  252  253  254  255  256  257  258  259  260  261  262  263  264  265  266  267  268  269  270  271  272  273  274  
+PLUMED:   275  276  277  278  279  280  281  282  283  284  285  286  287  288  289  290  291  292  293  294  295  296  297  298  299  
+PLUMED:   300  301  302  303  304  305  306  307  308  309  310  311  312  313  314  315  316  317  318  319  320  321  322  323  324  
+PLUMED:   325  326  327  328  329  330  331  332  333  334  335  336  337  338  339  340  341  342  343  344  345  346  347  348  349  
+PLUMED:   350  351  352  353  354  355  356  357  358  359  360  361  362  363  364  365  366  367  368  369  370  371  372  373  374  
+PLUMED:   375  376  377  378  379  380  381  382  383  384  385  386  387  388  389  390  391  392  393  394  395  396  397  398  399  
+PLUMED:   400  401  402  403  404  405  406  407  408  409  410  411  412  413  414  415  416  417  418  419  420  421  422  423  424  
+PLUMED:   425  426  427  428  429  430  431  432  433  434  435  436  437  438  439  440  441  442  443  444  445  446  447  448  449  
+PLUMED:   450  451  452  453  454  455  456  457  458  459  460  461  462  463  464  465  466  467  468  469  470  471  472  473  474  
+PLUMED:   475  476  477  478  479  480  481  482  483  484  485  486  487  488  489  490  491  492  493  494  495  496  497  498  499  
+PLUMED:   500  
+PLUMED:   second group:
+PLUMED:   
+PLUMED:   without periodic boundary conditions
+PLUMED:   contacts are counted with cutoff 1.  Using rational switching function with parameters d0=0 nn=6 mm=12
+PLUMED: Action PRINT
+PLUMED:   with label @1
+PLUMED:   with stride 1
+PLUMED:   with arguments : 
+PLUMED:    scalar with label cpu 
+PLUMED:   on file Colvar
+PLUMED:   with format  %8.4f
+PLUMED: Action FLUSH
+PLUMED:   with label @2
+PLUMED:   with stride 1
+PLUMED: END FILE: Coord.dat
+PLUMED: Timestep: 1.000000
+PLUMED: KbT has not been set by the MD engine
+PLUMED: It should be set by hand where needed
+PLUMED: Relevant bibliography:
+PLUMED:   [1] The PLUMED consortium, Nat. Methods 16, 670 (2019)
+PLUMED:   [2] Tribello, Bonomi, Branduardi, Camilloni, and Bussi, Comput. Phys. Commun. 185, 604 (2014)
+PLUMED: Please read and cite where appropriate!
+PLUMED: Finished setup
+PLUMED: PLUMED is starting
+PLUMED: Version: 2.10.0-dev (git: 639e81047-dirty) compiled on Jul 12 2024 at 11:29:54
+PLUMED: Please cite these papers when using PLUMED [1][2]
+PLUMED: For further information see the PLUMED web page at http://www.plumed.org
+PLUMED: Root: /scratch/drapetti/repos/plumed2-dev/
+PLUMED: LibraryPath: /u/d/drapetti/scratch/repos/plumed2-dev/src/lib/libplumedKernel.so
+PLUMED: For installed feature, see /scratch/drapetti/repos/plumed2-dev//src/config/config.txt
+PLUMED: Molecular dynamics engine: benchmarks
+PLUMED: Precision of reals: 8
+PLUMED: Running over 1 node
+PLUMED: Number of threads: 1
+PLUMED: Cache line size: 512
+PLUMED: Number of atoms: 500
+PLUMED: File suffix: 
+PLUMED: FILE: Coord.dat
+PLUMED: Action COORDINATION
+PLUMED:   with label cpu
+PLUMED:   between two groups of 500 and 0 atoms
+PLUMED:   first group:
+PLUMED:   1  2  3  4  5  6  7  8  9  10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  
+PLUMED:   25  26  27  28  29  30  31  32  33  34  35  36  37  38  39  40  41  42  43  44  45  46  47  48  49  
+PLUMED:   50  51  52  53  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68  69  70  71  72  73  74  
+PLUMED:   75  76  77  78  79  80  81  82  83  84  85  86  87  88  89  90  91  92  93  94  95  96  97  98  99  
+PLUMED:   100  101  102  103  104  105  106  107  108  109  110  111  112  113  114  115  116  117  118  119  120  121  122  123  124  
+PLUMED:   125  126  127  128  129  130  131  132  133  134  135  136  137  138  139  140  141  142  143  144  145  146  147  148  149  
+PLUMED:   150  151  152  153  154  155  156  157  158  159  160  161  162  163  164  165  166  167  168  169  170  171  172  173  174  
+PLUMED:   175  176  177  178  179  180  181  182  183  184  185  186  187  188  189  190  191  192  193  194  195  196  197  198  199  
+PLUMED:   200  201  202  203  204  205  206  207  208  209  210  211  212  213  214  215  216  217  218  219  220  221  222  223  224  
+PLUMED:   225  226  227  228  229  230  231  232  233  234  235  236  237  238  239  240  241  242  243  244  245  246  247  248  249  
+PLUMED:   250  251  252  253  254  255  256  257  258  259  260  261  262  263  264  265  266  267  268  269  270  271  272  273  274  
+PLUMED:   275  276  277  278  279  280  281  282  283  284  285  286  287  288  289  290  291  292  293  294  295  296  297  298  299  
+PLUMED:   300  301  302  303  304  305  306  307  308  309  310  311  312  313  314  315  316  317  318  319  320  321  322  323  324  
+PLUMED:   325  326  327  328  329  330  331  332  333  334  335  336  337  338  339  340  341  342  343  344  345  346  347  348  349  
+PLUMED:   350  351  352  353  354  355  356  357  358  359  360  361  362  363  364  365  366  367  368  369  370  371  372  373  374  
+PLUMED:   375  376  377  378  379  380  381  382  383  384  385  386  387  388  389  390  391  392  393  394  395  396  397  398  399  
+PLUMED:   400  401  402  403  404  405  406  407  408  409  410  411  412  413  414  415  416  417  418  419  420  421  422  423  424  
+PLUMED:   425  426  427  428  429  430  431  432  433  434  435  436  437  438  439  440  441  442  443  444  445  446  447  448  449  
+PLUMED:   450  451  452  453  454  455  456  457  458  459  460  461  462  463  464  465  466  467  468  469  470  471  472  473  474  
+PLUMED:   475  476  477  478  479  480  481  482  483  484  485  486  487  488  489  490  491  492  493  494  495  496  497  498  499  
+PLUMED:   500  
+PLUMED:   second group:
+PLUMED:   
+PLUMED:   without periodic boundary conditions
+PLUMED:   contacts are counted with cutoff 1.  Using rational switching function with parameters d0=0 nn=6 mm=12
+PLUMED: Action PRINT
+PLUMED:   with label @1
+PLUMED:   with stride 1
+PLUMED:   with arguments : 
+PLUMED:    scalar with label cpu 
+PLUMED:   on file Colvar
+PLUMED:   with format  %8.4f
+PLUMED: Action FLUSH
+PLUMED:   with label @2
+PLUMED:   with stride 1
+PLUMED: END FILE: Coord.dat
+PLUMED: Timestep: 1.000000
+PLUMED: KbT has not been set by the MD engine
+PLUMED: It should be set by hand where needed
+PLUMED: Relevant bibliography:
+PLUMED:   [1] The PLUMED consortium, Nat. Methods 16, 670 (2019)
+PLUMED:   [2] Tribello, Bonomi, Branduardi, Camilloni, and Bussi, Comput. Phys. Commun. 185, 604 (2014)
+PLUMED: Please read and cite where appropriate!
+PLUMED: Finished setup
+BENCH:  Starting MD loop
+BENCH:  Use CTRL+C to stop at any time and collect timers (not working in MPI runs)
+BENCH:  Warm-up completed
+BENCH:  60% completed
+BENCH:  Running comparative analysis, 1600 blocks with size 1
+BENCH:  
+BENCH:  Kernel:      this
+BENCH:  Input:       Coord.dat
+BENCH:  Comparative: 1.000 +- 0.000
+BENCH:                                                Cycles        Total      Average      Minimum      Maximum
+BENCH:  A Initialization                                   1     0.001329     0.001329     0.001329     0.001329
+BENCH:  B0 First step                                      1     0.001004     0.001004     0.001004     0.001004
+BENCH:  B1 Warm-up                                       399     0.412732     0.001034     0.000967     0.001826
+BENCH:  B2 Calculation part 1                            800     0.817150     0.001021     0.000976     0.001606
+BENCH:  B3 Calculation part 2                            800     0.838765     0.001048     0.000977     0.001706
+PLUMED:                                               Cycles        Total      Average      Minimum      Maximum
+PLUMED:                                                    1     2.069485     2.069485     2.069485     2.069485
+PLUMED: 1 Prepare dependencies                          2000     0.001352     0.000001     0.000000     0.000016
+PLUMED: 2 Sharing data                                  2000     0.004684     0.000002     0.000001     0.000032
+PLUMED: 3 Waiting for data                              2000     0.001436     0.000001     0.000000     0.000009
+PLUMED: 4 Calculating (forward loop)                    2000     2.034346     0.001017     0.000952     0.001778
+PLUMED: 5 Applying (backward loop)                      2000     0.001992     0.000001     0.000001     0.000012
+PLUMED: 6 Update                                        2000     0.016534     0.000008     0.000005     0.000161
+BENCH:  
+BENCH:  Kernel:      ../../src/lib/install/libplumedKernel.so
+BENCH:  Input:       Coord.dat
+BENCH:  Comparative: 1.021 +- 0.003
+BENCH:                                                Cycles        Total      Average      Minimum      Maximum
+BENCH:  A Initialization                                   1     0.001409     0.001409     0.001409     0.001409
+BENCH:  B0 First step                                      1     0.001141     0.001141     0.001141     0.001141
+BENCH:  B1 Warm-up                                       399     0.420014     0.001053     0.000993     0.001765
+BENCH:  B2 Calculation part 1                            800     0.836896     0.001046     0.000999     0.001651
+BENCH:  B3 Calculation part 2                            800     0.852747     0.001066     0.001000     0.001831
+PLUMED:                                               Cycles        Total      Average      Minimum      Maximum
+PLUMED:                                                    1     2.109832     2.109832     2.109832     2.109832
+PLUMED: 1 Prepare dependencies                          2000     0.001274     0.000001     0.000000     0.000011
+PLUMED: 2 Sharing data                                  2000     0.004684     0.000002     0.000001     0.000042
+PLUMED: 3 Waiting for data                              2000     0.001590     0.000001     0.000000     0.000011
+PLUMED: 4 Calculating (forward loop)                    2000     2.074114     0.001037     0.000980     0.001722
+PLUMED: 5 Applying (backward loop)                      2000     0.001959     0.000001     0.000001     0.000016
+PLUMED: 6 Update                                        2000     0.016623     0.000008     0.000004     0.000127
+""",
+    "parsed": output_2k1f["parsed"],
+    "colums": output_2k1f["colums"],
+}
+
 
 @pytest.fixture
 def full_benchmark_output_noheader():
@@ -1489,6 +1673,16 @@ def full_benchmark_output_2k1f():
 @pytest.fixture
 def extracted_rows_output_2k1f():
     return output_2k1f["parsed"], output_2k1f["colums"]
+
+
+@pytest.fixture
+def full_benchmark_output_2k1f_override():
+    return output_2k1f_override["file"], output_2k1f_override["parsed"]
+
+
+@pytest.fixture
+def extracted_rows_output_2k1f_override():
+    return output_2k1f_override["parsed"], output_2k1f_override["colums"]
 
 
 @pytest.fixture
