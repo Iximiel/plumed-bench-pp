@@ -135,19 +135,21 @@ class BenchmarkRun:
     settings: BenchmarkSettings = field(default_factory=BenchmarkSettings)
     runs: dict[str, KernelBenchmark] = field(default_factory=dict)
 
-    def extract_rows(self, rows: list) -> dict[str, dict[str, list]]:
+    def extract_rows(self, rows: list, keys: list[int] | None = None) -> dict[str, dict[str, list]]:
         """
         Extracts the specified rows from the given data dictionary.
         Works with the results of plumed_bench_pp.parser.parse_benchmark_output
 
         Args:
             rows (list): The list of rows to extract.
+            keys (list or None): The keys to access, otherwise iterate on everithing
 
         Returns:
             dict[str, dict[str,list]]: A dictionary of the simulations.
         """
         df = {}
-        for key in self.runs:
+        iterateon = keys if keys else self.runs
+        for key in iterateon:
             tmp = {}
             for row in rows:
                 tmp[row] = self.runs[key].rows[row].as_list()

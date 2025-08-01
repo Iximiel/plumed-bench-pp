@@ -82,7 +82,7 @@ def convert_to_table(
             continue
         natoms = file.settings.atoms
 
-        tt = file.extract_rows(rows_to_extract)
+        tt = file.extract_rows(rows_to_extract, [key])
         for row in rows_to_extract:
             tmp[row].append([natoms, *tt[key][row]])
 
