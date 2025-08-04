@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: MIT
 
+import warnings
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -14,6 +15,102 @@ if TYPE_CHECKING:
     from pandas import DataFrame
 
 from matplotlib.pyplot import Axes
+
+
+def plot_lines(
+    ax: Axes,
+    data: "list[dict]|dict[str,DataFrame]",
+    row: str,
+    *,
+    normalize_to_cycles: "bool|str" = False,
+    colors: "list|None" = None,
+    relative_to: "dict[str, DataFrame]| Any" = None,
+    relative_to_row: "str|None" = None,
+    titles: "list[str]|None" = None,
+    equidistant_points: bool = False,
+    plotkwargs: "None|dict" = None,
+):
+    """
+    Plot a line chart based on the provided data for a specified row.
+
+    It can be set up to normalize the data to cycles (normalize_to_cycles) and/or relative to another row.
+    `normalize_to_cycles` can be either a boolean flag or the name of the row to use as base for the cycles:
+    This is useful when using the TOTALTIME row, that is reported as a single cycle.
+
+    It can be set up to use a custom x-axis or colors for the bars.
+
+    It can be set up to plot relative to another dataset, dividing the heigh of each point by that number.
+
+    Args:
+        ax (Axes): The matplotlib axes to plot the histogram.
+        data (list[dict]|dict[str,DataFrame]): The data to be plotted.
+        row (str): The row in the data to be plotted.
+        barwidth (float, optional): The width of the bars in the histogram. Defaults to 0.8.
+        normalize_to_cycles (bool|str, optional): Flag to normalize data to cycles, if set to a row name the cycles of that row will be used. Defaults to False.
+        colors (list|None, optional): The colors for the bars in the histogram. Defaults to None.
+        relative_to (dict[str, DataFrame]| Any, optional): Data for relative comparison, you can pass a dict contianing the collection of data or the address or index of the desired base in the passed data. Defaults to None.
+        equidistant_points (bool, optional):If set to True the point on the line will be set at regular interval. Defaults to False.
+
+    Returns:
+        list: The list of plotted bars.
+    """
+    if not isinstance(data, list):
+        data = [data]
+    plotkwargs_ = {} if plotkwargs is None else plotkwargs
+    row_cycles = row
+    if isinstance(normalize_to_cycles, str):
+        # row_cycles is introduced because usually the TOTALTIME is a "single cycle"
+        # and the info on the effective number of steps is in the timer relative to apply or calculate
+        row_cycles = normalize_to_cycles
+        normalize_to_cycles = True
+    # divideby: "DataFrame|int" = 1
+    if relative_to is not None:
+        # relative to mode
+        if not isinstance(relative_to, dict):
+            # in this case relative_to assubed to be the index of the data
+            relative_to = data[relative_to]
+        if relative_to_row is None:
+            relative_to_row = row
+        divideby = relative_to[relative_to_row]
+        if normalize_to_cycles:
+            divideby = divideby.div(relative_to[row_cycles].Cycles, axis="index")
+    else:
+        divideby = 1
+    xnames = pd.concat([d[row] for d in data]).index.unique()
+    xdict = {int(name): i for i, name in enumerate(xnames)}
+    num_points = len(xnames)
+    x = np.arange(num_points) if equidistant_points else xnames
+    ax.set_xticks(x, xnames)
+
+    lines = []
+    for multiplier, d in enumerate(data):
+        toplot = d[row].copy()
+        if len(toplot) == 0:
+            warnings.warn("A line of data has no elements", RuntimeWarning, stacklevel=2)
+            continue
+        if normalize_to_cycles:
+            toplot = toplot.div(d[row_cycles].Cycles, axis="index")
+        toplot = toplot.div(divideby, axis="index", fill_value=None).dropna().Total.values
+
+        xpos = x
+        if len(x) != len(d[row]):
+            if equidistant_points:
+                xpos = []
+                for xname in d[row].index.values:
+                    xpos.append(xdict[int(xname)])
+                xpos = np.array(xpos)
+            else:
+                xpos = d[row].index.values
+        lines.append(
+            ax.plot(
+                xpos,
+                toplot,
+                color=colors[multiplier] if colors else None,
+                label=titles[multiplier] if titles else None,
+                **plotkwargs_,
+            )
+        )
+    return lines
 
 
 def plot_histo(
@@ -88,6 +185,9 @@ def plot_histo(
     for multiplier, d in enumerate(data):
         offset = width * multiplier
         toplot = d[row].copy()
+        if len(toplot) == 0:
+            warnings.warn("A line of data has no elements", RuntimeWarning, stacklevel=2)
+            continue
         if normalize_to_cycles:
             toplot = toplot.div(d[row_cycles].Cycles, axis="index")
         toplot = toplot.div(divideby, axis="index", fill_value=None).dropna().Total.values
