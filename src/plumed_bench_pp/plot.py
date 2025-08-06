@@ -28,6 +28,7 @@ def plot_lines(
     relative_to_row: "str|None" = None,
     titles: "list[str]|None" = None,
     equidistant_points: bool = False,
+    force_x_ticks: bool = False,
     plotkwargs: "None|dict" = None,
 ):
     """
@@ -50,6 +51,8 @@ def plot_lines(
         colors (list|None, optional): The colors for the bars in the histogram. Defaults to None.
         relative_to (dict[str, DataFrame]| Any, optional): Data for relative comparison, you can pass a dict contianing the collection of data or the address or index of the desired base in the passed data. Defaults to None.
         equidistant_points (bool, optional):If set to True the point on the line will be set at regular interval. Defaults to False.
+        force_x_ticks (bool, optional): Forces the xaxis ticks to be the x positions of the passed data. Defaults to False.
+        plotkwargs (dict|None, optional): Extra arguments to pass to the lineplot. Defaults to None.
 
     Returns:
         list: The list of plotted bars.
@@ -80,7 +83,8 @@ def plot_lines(
     xdict = {int(name): i for i, name in enumerate(xnames)}
     num_points = len(xnames)
     x = np.arange(num_points) if equidistant_points else xnames
-    ax.set_xticks(x, xnames)
+    if force_x_ticks:
+        ax.set_xticks(x, xnames)
 
     lines = []
     for multiplier, d in enumerate(data):
