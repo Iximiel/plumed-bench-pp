@@ -30,6 +30,7 @@ def plot_lines(
     equidistant_points: bool = False,
     force_x_ticks: bool = False,
     plotkwargs: "None|dict" = None,
+    scale_y_axis: float = 1.0,
 ):
     """
     Plot a line chart based on the provided data for a specified row.
@@ -53,6 +54,7 @@ def plot_lines(
         equidistant_points (bool, optional):If set to True the point on the line will be set at regular interval. Defaults to False.
         force_x_ticks (bool, optional): Forces the xaxis ticks to be the x positions of the passed data. Defaults to False.
         plotkwargs (dict|None, optional): Extra arguments to pass to the lineplot. Defaults to None.
+        scale_y_axis (float): scale all the y axis values by this number ingnored if  "relative_to is specified. Defaults to 1.0.
 
     Returns:
         list: The list of plotted bars.
@@ -78,7 +80,7 @@ def plot_lines(
         if normalize_to_cycles:
             divideby = divideby.div(relative_to[row_cycles].Cycles, axis="index")
     else:
-        divideby = 1
+        divideby = 1.0 / scale_y_axis
     xnames = pd.concat([d[row] for d in data]).index.unique()
     xdict = {int(name): i for i, name in enumerate(xnames)}
     num_points = len(xnames)
@@ -129,6 +131,7 @@ def plot_histo(
     relative_to_row: "str|None" = None,
     titles: "list[str]|None" = None,
     equidistant_bars: bool = True,
+    scale_y_axis: float = 1.0,
 ) -> "list[BarContainer]":
     """
     Plot a histogram based on the provided data for a specified row.
@@ -150,6 +153,7 @@ def plot_histo(
         colors (list|None, optional): The colors for the bars in the histogram. Defaults to None.
         relative_to (dict[str, DataFrame]| Any, optional): Data for relative comparison, you can pass a dict contianing the collection of data or the address or index of the desired base in the passed data. Defaults to None.
         equidistant_bars (bool, optional):If set to false the center of the groups bars will be in the number of atoms, by default the bars are evenly spaced. Defaults to True.
+        scale_y_axis (float): scale all the y axis values by this number ingnored if  "relative_to is specified. Defaults to 1.0.
 
     Returns:
         list: The list of plotted bars.
@@ -175,7 +179,7 @@ def plot_histo(
         if normalize_to_cycles:
             divideby = divideby.div(relative_to[row_cycles].Cycles, axis="index")
     else:
-        divideby = 1
+        divideby = 1.0 / scale_y_axis
 
     ncols = len(data)
 
